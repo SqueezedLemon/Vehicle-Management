@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Vehicle_Management.Data;
+using Vehicle_Management.wwwroot.Services;
 
 namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +18,16 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IFileService _fileService;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IFileService fileService)    
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -59,6 +63,9 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            public string Name { get; set; }
+            public string ProfilePicture { get; set; }
+            public IFormFile ImageFile { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -70,7 +77,9 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Name = user.Name,
+                ProfilePicture = user.ProfilePicture,
             };
         }
 
@@ -110,6 +119,30 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+
+            if (Input.Name != user.Name)
+            {
+                user.Name = Input.Name;
+                await _userManager.UpdateAsync(user);
+            }
+
+            // Image Upload
+            if (Input.ImageFile != null)
+            {
+                var result = _fileService.SaveImage(Input.ImageFile);
+                if (result.Item1 == 1)
+                {
+                    var oldImage = user.ProfilePicture;
+                    user.ProfilePicture = result.Item2;     
+                    await _userManager.UpdateAsync(user);
+                    var deleteResult = _fileService.DeleteImage(oldImage);
+                }
+                else 
+                {
+                    Console.WriteLine(result.Item2);
+                }
+            }
+
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

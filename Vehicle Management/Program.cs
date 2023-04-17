@@ -1,6 +1,9 @@
 global using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration;
 using Vehicle_Management.Data;
+using Vehicle_Management.wwwroot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,7 @@ builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
