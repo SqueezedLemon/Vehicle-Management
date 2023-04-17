@@ -1,8 +1,10 @@
-﻿namespace Vehicle_Management.wwwroot.Services
+﻿using System.Drawing;
+
+namespace Vehicle_Management.wwwroot.Services
 {
     public class FileService : IFileService
     {
-        IWebHostEnvironment environment;
+        readonly IWebHostEnvironment environment;
 
         public FileService(IWebHostEnvironment env)
         {
@@ -14,7 +16,7 @@
         {
             try
             {
-                var wwwPath = this.environment.WebRootPath;
+                var wwwPath = environment.WebRootPath;
                 var path = Path.Combine(wwwPath, "Uploads");
                 if (!Directory.Exists(path))
                 {
@@ -28,6 +30,10 @@
                 {
                     string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
                     return new Tuple<int, string>(0, msg);
+                }
+                if (imageFile.Length > 5*1024*1024)
+                {
+                    return new Tuple<int, string>(0, "The file is too large. Please limit to 5 MB");
                 }
                 string uniqueString = Guid.NewGuid().ToString();
                 var newFileName = uniqueString + ext;
