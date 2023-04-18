@@ -10,5 +10,6 @@ namespace Vehicle_Management.Data
         {
         }
         public DbSet<Vehicle> Vehicles { get; set; }
-    }
+		public DbSet<Order> Orders { get; set; }
+	}
 }

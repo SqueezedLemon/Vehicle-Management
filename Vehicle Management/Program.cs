@@ -1,9 +1,11 @@
 global using Microsoft.AspNetCore.Identity;
+global using Vehicle_Management.Data;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration;
 using Vehicle_Management.Data;
 using Vehicle_Management.wwwroot.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
