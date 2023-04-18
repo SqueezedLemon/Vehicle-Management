@@ -9,6 +9,6 @@ namespace Vehicle_Management.Data
             : base(options)
         {
         }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
     }
 }

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Scrollable Table with Search</title>
+	<style>
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+		th, td {
+			text-align: left;
+			padding: 8px;
+		}
+		tr:nth-child(even){background-color: #f2f2f2}
+		input[type=text] {
+			padding: 6px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			margin-bottom: 12px;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<h2>Scrollable Table with Search</h2>
+	<input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search for registration Number">
+	<table id="myTable">
+		<thead>
+			<tr>
+				<th>Registration Number</th>
+				<th>Manufacture Company</th>
+				<th>Vehicle Model</th>
+                <th>Engine Capacity</th>
+                <th>Manufactured Year</th>
+                <th>Purchased On</th>
+                <th>Color</th>
+                <th>Engine Number</th>
+                <th>Chasis Number</th>
+                <th>Passenger Capacity</th>
+                <th>Fuel</th>
+                <th>Is Available</th>
+			</tr>
+		</thead>
+		<tbody id="myTableBody">
+			<!-- Rows will be dynamically added here -->
+		</tbody>
+	</table>
+	<script>
+		// Function to search table rows
+		function searchTable() {
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("myInput");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[0];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+		
+		// Function to dynamically add rows to the table
+		function addRow(registrationNumber, manufactureCompany, vehicleModel, engineCapacity, manufacturedYear, purchasedOn, color, engineNumber, chasisNumber, passengerCapacity, fuel, isAvailable) {
+			var tableBody = document.getElementById("myTableBody");
+			var row = tableBody.insertRow(-1);
+			var registrationNumberCell = row.insertCell(0);
+			var manufactureCompanyCell = row.insertCell(1);
+			var vehicleModelCell = row.insertCell(2);
+            var engineCapacityCell = row.insertCell(3);
+            var manufacturedYearCell = row.insertCell(4);
+            var purchasedOnCell = row.insertCell(5);
+            var colorCell = row.insertCell(6);
+            var engineNumberCell = row.insertCell(7);
+            var chasisNumberCell = row.insertCell(8);
+            var passengerCapacityCell = row.insertCell(9);
+            var fuelCell = row.insertCell(10);
+            var isAvailableCell = row.insertCell(11);
+			registrationNumberCell.innerHTML = registrationNumber;
+			manufactureCompany.innerHTML = manufactureCompany;
+			vehicleModel.innerHTML = vehicleModel;
+            engineCapacityCell.innerHTML = engineCapacity;
+            manufacturedYearCell.innerHTML = manufacturedYear;
+            purchasedOnCell.innerHTML = purchasedOn;
+            colorCell.innerHTML = color;
+            engineNumberCell.innerHTML = engineNumber;
+            chasisNumberCell.innerHTML = chasisNumber;
+            passengerCapacityCell.innerHTML = passengerCapacity;
+            fuelCell.innerHTML = fuel;
+            isAvailableCell.innerHTML = isAvailable;
+		}
+
+		// Example data retrieved from database
+		var data = [
+			{ registrationNumber: "A", manufactureCompany: "Doe", vehicleModel: "25", engineCapacity: "Doe", manufacturedYear: 2005, purchasedOn: "Doe", color: "Doe", engineNumber: "Doe", chasisNumber: "Doe", passengerCapacity: 25, fuel: "Disel", isAvailable: "Yes" },
+			{ registrationNumber: "B", manufactureCompany: "Doe", vehicleModel: "25", engineCapacity: "Doe", manufacturedYear: 2005, purchasedOn: "Doe", color: "Doe", engineNumber: "Doe", chasisNumber: "Doe", passengerCapacity: 25, fuel: "Disel", isAvailable: "Yes" },
+			{ registrationNumber: "C", manufactureCompany: "Doe", vehicleModel: "25", engineCapacity: "Doe", manufacturedYear: 2005, purchasedOn: "Doe", color: "Doe", engineNumber: "Doe", chasisNumber: "Doe", passengerCapacity: 25, fuel: "Disel", isAvailable: "Yes" }
+		];
+
+		// Loop through data and add rows to the table
+		for (var i = 0; i < data.length; i++) {
+			addRow(data[i].registrationNumber, data[i].manufactureCompany, data[i].vehicleModel, data[i].engineCapacity, data[i].manufacturedYear, data[i].purchasedOn, data[i].color, data[i].engineNumber, data[i].chasisNumber, data[i].passengerCapacity, data[i].fuel, data[i].isAvailable);
+		}
+	</script>
+</body>
+</html>
