@@ -81,6 +81,8 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+            [Required]
+            public string Role { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -123,8 +125,16 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
-                    _logger.LogInformation("User created a new account with password.");
+                    if (Input.Role == "User")
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                        _logger.LogInformation("User created a new account with password.");
+                    }
+                    if (Input.Role == "Admin")
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+                        _logger.LogInformation("User created a new account with password with admin permissions.");
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
