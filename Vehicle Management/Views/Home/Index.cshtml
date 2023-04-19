@@ -13,7 +13,7 @@
 				<input type="text" id="myInput" onkeyup="searchTable()" placeholder="Registration Number">
 			</div>
 			<div class="col text-end">
-				<a href=""><i class="bi bi-plus-circle-fill" style="font-size: 25px; color: black;"></i></a>
+				<a asp-controller="Home" asp-action="AddVehicle"><i class="bi bi-plus-circle-fill" style="font-size: 25px; color: black;"></i></a>
 			</div>
 		</div>
 		<div class="table-responsive">
@@ -35,41 +35,62 @@
 					</tr>
 				</thead>
 				<tbody id="myTableBody">
-					@foreach (var product in Model)
+					@foreach (var vehicle in Model)
 					{
 						<tr>
-							<td class="text-center">@product.RegistrationNumber</td>
-							<td class="text-center">@product.ManufactureCompany</td>
-							<td class="text-center">@product.VehicleModel</td>
-							<td class="text-center">@product.EngineCapacity</td>
-							<td class="text-center">@product.ManufacturedYear</td>
-							<td class="text-center">@product.PurchasedOn.ToString("yyyy-MM-dd")</td>
-							<td class="text-center">@product.Color</td>
-							<td class="text-center">@product.EngineNumber</td>
-							<td class="text-center">@product.ChasisNumber</td>
-							<td class="text-center">@product.PassengerCapacity</td>
-							<td class="text-center">@product.Fuel</td>
-							<td class="text-center">@product.IsAvailable</td>
+							<td class="text-center">@vehicle.RegistrationNumber</td>
+							<td class="text-center">@vehicle.ManufactureCompany</td>
+							<td class="text-center">@vehicle.VehicleModel</td>
+							<td class="text-center">@vehicle.EngineCapacity</td>
+							<td class="text-center">@vehicle.ManufacturedYear</td>
+							<td class="text-center">@vehicle.PurchasedOn.ToString("yyyy-MM-dd")</td>
+							<td class="text-center">@vehicle.Color</td>
+							<td class="text-center">@vehicle.EngineNumber</td>
+							<td class="text-center">@vehicle.ChasisNumber</td>
+							<td class="text-center">@vehicle.PassengerCapacity</td>
+							<td class="text-center">@vehicle.Fuel</td>
+							<td class="text-center">@vehicle.IsAvailable</td>
 							<td class="text-center">
-								<a href=""><i class="bi bi-pencil-square" style="font-size: 20px; color: black;"></i></a>
-								<a href=""><i class="bi bi-trash3-fill" style="font-size: 20px; color: red;"></i></a>
+								<a asp-controller="Home" asp-action="EditVehicle" asp-route-id="@vehicle.Id"><i class="bi bi-pencil-square" style="font-size: 20px; color: black;"></i></a>
+								<a href="" onclick="deleteConfirmation(event,@vehicle.Id);"><i class="bi bi-trash3-fill" style="font-size: 20px; color: red;"></i></a>
 							</td>
 						</tr>
 					}
 				</tbody>
 			</table>
+			<!-- Delete Popup Modal -->
+			<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Are you sure you want to delete this data? This action cannot be undone.
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<a asp-controller="Home" asp-action="DeleteVehicle" id="deleteButton" class="btn btn-danger">Delete</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<script>
 			// Function to search table rows
-			function searchTable() {
+			function searchTable() 
+			{
 				var input, filter, table, tr, td, i, txtValue;
 				input = document.getElementById("myInput");
 				filter = input.value.toUpperCase();
 				table = document.getElementById("myTable");
 				tr = table.getElementsByTagName("tr");
-				for (i = 0; i < tr.length; i++) {
+				for (i = 0; i < tr.length; i++) 
+				{
 					td = tr[i].getElementsByTagName("td")[0];
-					if (td) {
+					if (td) 
+					{
 						txtValue = td.textContent || td.innerText;
 						if (txtValue.toUpperCase().indexOf(filter) > -1) {
 							tr[i].style.display = "";
@@ -80,46 +101,12 @@
 				}
 			}
 
-			// Function to dynamically add rows to the table
-			function addRow(registrationNumber, manufactureCompany, vehicleModel, engineCapacity, manufacturedYear, purchasedOn, color, engineNumber, chasisNumber, passengerCapacity, fuel, isAvailable) {
-				var tableBody = document.getElementById("myTableBody");
-				var row = tableBody.insertRow(-1);
-				var registrationNumberCell = row.insertCell(0);
-				registrationNumberCell.classList.add("text-center");
-				var manufactureCompanyCell = row.insertCell(1);
-				manufactureCompanyCell.classList.add("text-center");
-				var vehicleModelCell = row.insertCell(2);
-				vehicleModelCell.classList.add("text-center");
-				var engineCapacityCell = row.insertCell(3);
-				engineCapacityCell.classList.add("text-center");
-				var manufacturedYearCell = row.insertCell(4);
-				manufacturedYearCell.classList.add("text-center");
-				var purchasedOnCell = row.insertCell(5);
-				purchasedOnCell.classList.add("text-center");
-				var colorCell = row.insertCell(6);
-				colorCell.classList.add("text-center");
-				var engineNumberCell = row.insertCell(7);
-				engineNumberCell.classList.add("text-center");
-				var chasisNumberCell = row.insertCell(8);
-				chasisNumberCell.classList.add("text-center");
-				var passengerCapacityCell = row.insertCell(9);
-				passengerCapacityCell.classList.add("text-center");
-				var fuelCell = row.insertCell(10);
-				fuelCell.classList.add("text-center");
-				var isAvailableCell = row.insertCell(11);
-				isAvailableCell.classList.add("text-center");
-				registrationNumberCell.innerHTML = registrationNumber;
-				manufactureCompanyCell.innerHTML = manufactureCompany;
-				vehicleModelCell.innerHTML = vehicleModel;
-				engineCapacityCell.innerHTML = engineCapacity;
-				manufacturedYearCell.innerHTML = manufacturedYear;
-				purchasedOnCell.innerHTML = purchasedOn;
-				colorCell.innerHTML = color;
-				engineNumberCell.innerHTML = engineNumber;
-				chasisNumberCell.innerHTML = chasisNumber;
-				passengerCapacityCell.innerHTML = passengerCapacity;
-				fuelCell.innerHTML = fuel;
-				isAvailableCell.innerHTML = isAvailable;
+			function deleteConfirmation(event,id) {
+				event.preventDefault();
+				$('#deleteConfirmationModal').modal('show');
+				$('#deleteButton').val(id);
+				$('#deleteButton').attr('href', '/Home/DeleteVehicle/' + id);
+				return false;
 			}
 		</script>
      </div>   

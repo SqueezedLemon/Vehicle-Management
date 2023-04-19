@@ -1,7 +1,81 @@
-﻿
+﻿@model Vehicle_Management.Models.HomeModel
 @{
     ViewData["Title"] = "AddVehicle";
 }
 
-<h1>AddVehicle</h1>
+@if (User.IsInRole("Admin"))
+{
+	<div class="container">
+		<div class="row">
+			<div class="col-md-5">
+				<h1>New Vehicle Registration</h1>
+				<form asp-controller="Home" asp-action="AddVehicle" method="post">
+					<div class="form-group pb-3">
+						<label asp-for="RegistrationNumber">Registration Number</label>
+						<input asp-for="RegistrationNumber" type="text" class="form-control" id="registration-number" name="RegistrationNumber">
+						<span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="ManufactureCompany">Manufacture Company</label>
+						<input asp-for="ManufactureCompany" type="text" class="form-control" id="manufacture-company" name="ManufactureCompany">
+						<span asp-validation-for="ManufactureCompany" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="VehicleModel">Vehicle Model</label>
+						<input asp-for="VehicleModel" type="text" class="form-control" id="vehicle-model" name="VehicleModel">
+						<span asp-validation-for="VehicleModel" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="EngineCapacity">Engine Capacity(cc)</label>
+						<input asp-for="EngineCapacity" type="number" class="form-control" id="engine-capacity" name="EngineCapacity">
+						<span asp-validation-for="EngineCapacity" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="ManufacturedYear">Manufactured Year</label>
+						<input asp-for="ManufacturedYear" type="number" class="form-control" id="manufactured-year" name="ManufacturedYear">
+						<span asp-validation-for="ManufacturedYear" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="PurchasedOn">Purchased On</label>
+						<input asp-for="PurchasedOn" type="date" class="form-control" id="purchased-on" name="PurchasedOn" value="2000-01-15">
+						<span asp-validation-for="PurchasedOn" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="Color">Color</label>
+						<input asp-for="Color" type="text" class="form-control" id="color" name="Color">
+						<span asp-validation-for="Color" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="EngineNumber">Engine Number</label>
+						<input asp-for="EngineNumber" type="text" class="form-control" id="engine-number" name="EngineNumber">
+						<span asp-validation-for="EngineNumber" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="ChasisNumber">Chasis Number</label>
+						<input asp-for="ChasisNumber" type="text" class="form-control" id="chasis-number" name="ChasisNumber">
+						<span asp-validation-for="ChasisNumber" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="PassengerCapacity">Passenger Capacity</label>
+						<input asp-for="PassengerCapacity" type="number" class="form-control" id="passenger-capacity" name="PassengerCapacity">
+						<span asp-validation-for="PassengerCapacity" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-4">
+						<label asp-for="Fuel">Fuel</label>
+						<select asp-for="Fuel" class="form-control" id="fuel" name="Fuel">
+							<option value="Diesel">Diesel</option>
+							<option value="Petrol">Petrol</option>
+						</select>
+						<span asp-validation-for="Fuel" class="text-danger"></span>
+					</div>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+    <h1>Access Denied</h1>
+}
 
