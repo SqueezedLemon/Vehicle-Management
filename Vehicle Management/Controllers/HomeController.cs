@@ -18,24 +18,7 @@ namespace Vehicle_Management.Controllers
 
 		public IActionResult Index()
 		{
-			var vehicles = _dbContext.Vehicles.ToList();
-			List<HomeModel> homeModels = vehicles.Select(v => new HomeModel
-			{
-				Id = v.Id,
-				RegistrationNumber = v.RegistrationNumber,
-				ManufactureCompany = v.ManufactureCompany,
-				VehicleModel = v.VehicleModel,
-				EngineCapacity = v.EngineCapacity,
-				ManufacturedYear = v.ManufacturedYear,
-				PurchasedOn = v.PurchasedOn,
-				Color = v.Color,
-				EngineNumber = v.EngineNumber,
-				ChasisNumber = v.ChasisNumber,
-				PassengerCapacity = v.PassengerCapacity,
-				Fuel = v.Fuel,
-				IsAvailable = v.IsAvailable
-			}).ToList();
-			return View(homeModels);
+			return View();
 		}
 
 		public IActionResult Privacy()
@@ -47,6 +30,30 @@ namespace Vehicle_Management.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+		// View Vehicle Table
+		[HttpGet]
+		public IActionResult ViewVehicles()
+		{
+            var vehicles = _dbContext.Vehicles.ToList();
+            List<HomeModel> homeModels = vehicles.Select(v => new HomeModel
+            {
+                Id = v.Id,
+                RegistrationNumber = v.RegistrationNumber,
+                ManufactureCompany = v.ManufactureCompany,
+                VehicleModel = v.VehicleModel,
+                EngineCapacity = v.EngineCapacity,
+                ManufacturedYear = v.ManufacturedYear,
+                PurchasedOn = v.PurchasedOn,
+                Color = v.Color,
+                EngineNumber = v.EngineNumber,
+                ChasisNumber = v.ChasisNumber,
+                PassengerCapacity = v.PassengerCapacity,
+                Fuel = v.Fuel,
+                IsAvailable = v.IsAvailable
+            }).ToList();
+            return View(homeModels);
 		}
 
 		//Add New Vehicle
@@ -68,7 +75,7 @@ namespace Vehicle_Management.Controllers
 			newVehicle.IsAvailable = true;
 			_dbContext.Add(newVehicle);
 			_dbContext.SaveChanges();
-			return RedirectToAction("Index");
+			return RedirectToAction("ViewVehicles");
 		}
 
 		[HttpGet]
@@ -96,7 +103,7 @@ namespace Vehicle_Management.Controllers
 			getVehicle.Fuel = model.Fuel;
 			getVehicle.IsAvailable = model.IsAvailable;
 			_dbContext.SaveChanges();
-			return RedirectToAction("Index");
+			return RedirectToAction("ViewVehicles");
 		}
 
 		[HttpGet]
@@ -130,7 +137,7 @@ namespace Vehicle_Management.Controllers
 			}
 			_dbContext.Remove(getVehicle);
 			_dbContext.SaveChanges();
-			return RedirectToAction("Index");
+			return RedirectToAction("ViewVehicles");
 
 		}
 	}

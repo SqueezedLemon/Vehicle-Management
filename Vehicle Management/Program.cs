@@ -1,9 +1,10 @@
 global using Microsoft.AspNetCore.Identity;
 global using Vehicle_Management.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration;
-using Vehicle_Management.Data;
 using Vehicle_Management.wwwroot.Services;
 
 
@@ -19,6 +20,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddUserManager<UserManager<ApplicationUser>>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IFileService, FileService>();
