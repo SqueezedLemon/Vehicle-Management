@@ -7,11 +7,13 @@ namespace Vehicle_Management.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly ILogger<HomeController> _logger;
+		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
 		private readonly ApplicationDbContext _dbContext;
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
+		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
 		{
+			_userManager = userManager;
 			_logger = logger;
 			_dbContext = dbContext;
 		}
@@ -59,9 +61,11 @@ namespace Vehicle_Management.Controllers
 		//Add New Vehicle
 
 		[HttpPost]
-		public IActionResult AddVehicle(HomeModel model, Vehicle newVehicle)
-		{
-			newVehicle.RegistrationNumber = model.RegistrationNumber;
+		public async Task<IActionResult> AddVehicle(HomeModel model, Vehicle newVehicle)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            newVehicle.RegistrationNumber = model.RegistrationNumber;
 			newVehicle.ManufactureCompany = model.ManufactureCompany;
 			newVehicle.VehicleModel = model.VehicleModel;
 			newVehicle.EngineCapacity = model.EngineCapacity;
@@ -73,7 +77,9 @@ namespace Vehicle_Management.Controllers
 			newVehicle.PassengerCapacity = model.PassengerCapacity;
 			newVehicle.Fuel = model.Fuel;
 			newVehicle.IsAvailable = true;
-			_dbContext.Add(newVehicle);
+			newVehicle.CreatedDate = DateTime.Now;
+            newVehicle.CreatedById = currentUser.Id;
+            _dbContext.Add(newVehicle);
 			_dbContext.SaveChanges();
 			return RedirectToAction("ViewVehicles");
 		}

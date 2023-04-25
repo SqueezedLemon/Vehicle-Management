@@ -21,5 +21,9 @@ namespace Vehicle_Management.Data
         public int PassengerCapacity { get; set; }
         public string? Fuel { get; set; }
         public bool IsAvailable { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+        public string? CreatedById { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

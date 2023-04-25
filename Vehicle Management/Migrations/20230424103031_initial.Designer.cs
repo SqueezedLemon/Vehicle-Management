@@ -9,11 +9,11 @@ using Vehicle_Management.Data;
 
 #nullable disable
 
-namespace Vehicle_Management.Data.Migrations
+namespace Vehicle_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230418060142_VehicleTable")]
-    partial class VehicleTable
+    [Migration("20230424103031_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,85 @@ namespace Vehicle_Management.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Vehicle_Management.Data.Request", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedbyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DropPoint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DropPointLandmark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PickupPoint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PickupPointLandmark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RequestStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RequestedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedbyId")
+                        .IsUnique()
+                        .HasFilter("[CreatedbyId] IS NOT NULL");
+
+                    b.HasIndex("RequestStatusId")
+                        .IsUnique();
+
+                    b.ToTable("Request");
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.RequestStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RequestStatusName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("RequestStatus");
+                });
+
             modelBuilder.Entity("Vehicle_Management.Data.Vehicle", b =>
                 {
                     b.Property<int>("Id")
@@ -242,6 +321,13 @@ namespace Vehicle_Management.Data.Migrations
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("EngineCapacity")
                         .HasColumnType("int");
@@ -275,6 +361,8 @@ namespace Vehicle_Management.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Vehicle");
                 });
@@ -328,6 +416,47 @@ namespace Vehicle_Management.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.Request", b =>
+                {
+                    b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.Request", "CreatedbyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Vehicle_Management.Data.RequestStatus", "RequestStatus")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.Request", "RequestStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("RequestStatus");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.RequestStatus", b =>
+                {
+                    b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.Vehicle", b =>
+                {
+                    b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

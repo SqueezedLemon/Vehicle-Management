@@ -20,5 +20,8 @@ namespace Vehicle_Management.Models
 		public int PassengerCapacity { get; set; }
 		public string? Fuel { get; set; }
 		public bool IsAvailable { get; set; }
-	}
+        public DateTime CreatedDate { get; set; }
+        public String? CreatedById { get; set; }
+        public ApplicationUser? User { get; set; }
+    }
 }

@@ -18,8 +18,11 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
+    <link href="~/css/style.css" rel="stylesheet">
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="~/css/flaticon.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -27,7 +30,8 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <partial name="_SidebarPartial" />
+        @*<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-area="" asp-controller="Home" asp-action="Index">
@@ -36,8 +40,8 @@
                 </div>
                 <div class="sidebar-brand-text mx-3">Vehicle Management</div>
             </a>
-            <partial name="_SidebarPartial" />
-        </ul>
+            
+        </ul>*@
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -47,16 +51,14 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
                     <partial name="_NavbarPartial" />
                 </nav>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    @RenderBody()
-                </div>
-                <!-- /.container-fluid -->
+                @RenderBody()
+                <!-- End Page Content -->
 
             </div>
             <!-- End of Main Content -->
@@ -94,6 +96,8 @@
     <script src="~/js/demo/chart-area-demo.js"></script>
     <script src="~/js/demo/chart-pie-demo.js"></script>
     <script src="~/js/demo/datatables-demo.js"></script>
-
+    <script src="~/js/jquery.stellar.min.js"></script>
+    <script src="~/js/jquery.animateNumber.min.js"></script>
+    <script src="~/js/jquery.waypoints.min.js"></script>
 </body>
 </html>
