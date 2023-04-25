@@ -20,8 +20,13 @@ namespace Vehicle_Management.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
-		}
+			Console.WriteLine(User.IsInRole("User"));
+			if (User.IsInRole("User"))
+			{
+				return RedirectToAction("Home","User");
+            }
+            return View();
+        }
 
 		public IActionResult Privacy()
 		{
@@ -64,7 +69,6 @@ namespace Vehicle_Management.Controllers
 		public async Task<IActionResult> AddVehicle(HomeModel model, Vehicle newVehicle)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-
             newVehicle.RegistrationNumber = model.RegistrationNumber;
 			newVehicle.ManufactureCompany = model.ManufactureCompany;
 			newVehicle.VehicleModel = model.VehicleModel;
