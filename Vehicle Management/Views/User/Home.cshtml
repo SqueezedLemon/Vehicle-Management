@@ -1,11 +1,7 @@
-﻿@inject UserManager<ApplicationUser> userManager
+﻿@model Vehicle_Management.Models.UserRequest
+@inject UserManager<ApplicationUser> userManager
 @{
     var user = await userManager.GetUserAsync(User);
-    if (user != null)
-    {
-        var name = user.Name;
-        // use the name variable in your HTML
-    }
 }
 <div class="hero-wrap ftco-degree-bg" style="background-image: url('/img/bg_1.jpg');" data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
@@ -26,32 +22,36 @@
             <div class="col-md-12	featured-top">
                 <div class="row no-gutters">
                     <div class="col-md-4 d-flex align-items-center">
-                        <form action="#" class="request-form bg-primary">
+                        <form class="request-form bg-primary" asp-controller="User" asp-action="Home" method="post">
                             <h2>Make your trip</h2>
                             <div class="form-group">
-                                <label for="" class="label">Pick-up location</label>
-                                <input type="text" class="form-control" placeholder="City, Airport, Station, etc">
+                                <label asp-for="PickupPoint" class="label">Pick-up location</label>
+                                <input asp-for="PickupPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
                             </div>
                             <div class="form-group">
-                                <label for="" class="label">Drop-off location</label>
-                                <input type="text" class="form-control" placeholder="City, Airport, Station, etc">
+                                <label asp-for="DropPoint" class="label">Drop-off location</label>
+                                <input asp-for="DropPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
                             </div>
                             <div class="d-flex">
                                 <div class="form-group mr-2">
-                                    <label for="" class="label">Pick-up Landmark</label>
-                                    <input type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc">
+                                    <label asp-for="PickupPointLandmark" class="label">Pick-up Landmark</label>
+                                    <input asp-for="PickupPointLandmark" type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc" required>
                                 </div>
                                 <div class="form-group ml-2">
-                                    <label for="" class="label">Drop-off Landmark</label>
-                                    <input type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc">
+                                    <label asp-for="DropPointLandmark" class="label">Drop-off Landmark</label>
+                                    <input asp-for="DropPointLandmark" type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="" class="label">Pick-up Date</label>
-                                <input type="date" class="form-control" id="time_pick" placeholder="Date">
+                                <label asp-for="RequestedDate" class="label">Pick-up Date</label>
+                                <input asp-for="RequestedDate" type="date" class="form-control" id="time_pick" placeholder="Date" required>
                             </div>
                             <div class="form-group">
-                                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-secondary py-3 px-4">Request A Vehicle Now</a>
+                                <label asp-for="Message" class="label">Message</label>
+                                <textarea asp-for="Message" class="form-control" id="message" name="message" rows="2" cols="30" placeholder="Your Message"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-secondary py-3 px-4">Request A Vehicle Now</button>
                             </div>
                         </form>
                     </div>
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p><a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary py-3 px-4">Login</a></p>
+                            <p><a href="#" class="btn btn-primary py-3 px-4">Request Vehicle</a></p>
                         </div>
                     </div>
                 </div>
