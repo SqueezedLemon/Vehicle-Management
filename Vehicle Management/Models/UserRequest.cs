@@ -9,7 +9,9 @@
         public string? DropPoint { get; set; }
         public string? DropPointLandmark { get; set; }
         public bool IsApproved { get; set; } = false;
+        public bool IsUnapproved { get; set; } = false;
         public bool IsCompleted { get; set; } = false;
+        public bool IsNotified { get; set; } = false;
         public string? Message { get; set; }
         public DateTime CreatedDate { get; set; }
 

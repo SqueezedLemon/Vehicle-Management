@@ -20,7 +20,7 @@ namespace Vehicle_Management.Controllers
 
 		public IActionResult Index()
 		{
-			Console.WriteLine(User.IsInRole("User"));
+
 			if (User.IsInRole("User"))
 			{
 				return RedirectToAction("Home","User");
@@ -39,8 +39,30 @@ namespace Vehicle_Management.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 
-		// View Vehicle Table
+		//View All requests
 		[HttpGet]
+		public IActionResult ViewRequests(List<UserRequest> model)
+		{
+			var request = _dbContext.Requests.ToList();
+			model = request.Select(r => new UserRequest
+			{
+				Id = r.Id,
+				RequestedDate = r.RequestedDate,
+				PickupPoint = r.PickupPoint,
+				PickupPointLandmark = r.PickupPointLandmark,
+				DropPoint = r.DropPoint,
+				DropPointLandmark = r.DropPointLandmark,
+				CreatedDate = r.CreatedDate,
+				IsApproved = r.IsApproved,
+				IsCompleted = r.IsCompleted,
+				UserId = r.UserId,
+			}).ToList();
+            return View(model);
+		}
+
+
+        // View Vehicle Table
+        [HttpGet]
 		public IActionResult ViewVehicles()
 		{
             var vehicles = _dbContext.Vehicles.ToList();
