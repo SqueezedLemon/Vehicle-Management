@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vehicle_Management.Constants;
 using Vehicle_Management.Data;
@@ -31,13 +32,15 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _dbContext;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +48,7 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -111,7 +115,7 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(Driver newDriver, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -122,9 +126,10 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                
                 if (result.Succeeded)
                 {
+                    var userId = await _userManager.GetUserIdAsync(user);
                     if (Input.Role == "User")
                     {
                         await _userManager.AddToRoleAsync(user, Roles.User.ToString());
@@ -135,8 +140,18 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
                         _logger.LogInformation("User created a new account with password with admin permissions.");
                     }
+                    if (Input.Role == "Driver")
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.Driver.ToString());
+                        _logger.LogInformation("User created a new account with password with driver permissions.");
+                        newDriver.CreatedDate = DateTime.Now;
+                        newDriver.UserID = userId;
+                        var currentUser = await _userManager.GetUserAsync(User);
+                        newDriver.CreatedById = currentUser.Id;
+                        _dbContext.Add(newDriver);
+                        _dbContext.SaveChanges();
+                    }
 
-                    var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

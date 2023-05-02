@@ -3,10 +3,8 @@
 @{
     ViewData["Title"] = "Vehicle Table";
 }
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-
 <!-- Page Heading -->
 @if (User.IsInRole("Admin"))
 {
@@ -61,18 +59,21 @@
                             <tbody>
                                 @foreach (var request in Model)
                                 {
-                                    <tr>
-                                        <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                        <td class="text-center">@request.PickupPoint</td>
-                                        <td class="text-center">@request.PickupPointLandmark</td>
-                                        <td class="text-center">@request.DropPoint</td>
-                                        <td class="text-center">@request.DropPointLandmark</td>
-                                        <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                        @{
-                                            var user = await userManager.FindByIdAsync(request.UserId);
-                                        }
-                                        <td class="text-center">@user.Name</td>
-                                    </tr>
+                                    @if (!request.IsApproved && !request.IsCompleted)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                            <td class="text-center">@request.PickupPoint</td>
+                                            <td class="text-center">@request.PickupPointLandmark</td>
+                                            <td class="text-center">@request.DropPoint</td>
+                                            <td class="text-center">@request.DropPointLandmark</td>
+                                            <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                            @{
+                                                var user = await userManager.FindByIdAsync(request.UserId);
+                                            }
+                                            <td class="text-center">@user.Name</td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -106,18 +107,21 @@
                             <tbody>
                                 @foreach (var request in Model)
                                 {
-                                    <tr>
-                                        <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                        <td class="text-center">@request.PickupPoint</td>
-                                        <td class="text-center">@request.PickupPointLandmark</td>
-                                        <td class="text-center">@request.DropPoint</td>
-                                        <td class="text-center">@request.DropPointLandmark</td>
-                                        <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                        @{
-                                            var user = await userManager.FindByIdAsync(request.UserId);
-                                        }
-                                        <td class="text-center">@user.Name</td>
-                                    </tr>
+                                    @if (request.IsApproved && !request.IsCompleted)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                            <td class="text-center">@request.PickupPoint</td>
+                                            <td class="text-center">@request.PickupPointLandmark</td>
+                                            <td class="text-center">@request.DropPoint</td>
+                                            <td class="text-center">@request.DropPointLandmark</td>
+                                            <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                            @{
+                                                var user = await userManager.FindByIdAsync(request.UserId);
+                                            }
+                                            <td class="text-center">@user.Name</td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -151,18 +155,21 @@
                             <tbody>
                                 @foreach (var request in Model)
                                 {
-                                    <tr>
-                                        <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                        <td class="text-center">@request.PickupPoint</td>
-                                        <td class="text-center">@request.PickupPointLandmark</td>
-                                        <td class="text-center">@request.DropPoint</td>
-                                        <td class="text-center">@request.DropPointLandmark</td>
-                                        <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                        @{
-                                            var user = await userManager.FindByIdAsync(request.UserId);
-                                        }
-                                        <td class="text-center">@user.Name</td>
-                                    </tr>
+                                    @if (request.IsCompleted)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                            <td class="text-center">@request.PickupPoint</td>
+                                            <td class="text-center">@request.PickupPointLandmark</td>
+                                            <td class="text-center">@request.DropPoint</td>
+                                            <td class="text-center">@request.DropPointLandmark</td>
+                                            <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                            @{
+                                                var user = await userManager.FindByIdAsync(request.UserId);
+                                            }
+                                            <td class="text-center">@user.Name</td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
