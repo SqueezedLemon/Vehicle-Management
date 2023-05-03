@@ -52,7 +52,14 @@ namespace Vehicle_Management.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Request>()
+			modelBuilder.Entity<Request>()
+				.HasOne(r => r.User)
+				.WithMany()
+				.HasForeignKey(r => r.DriverUserId)
+				.IsRequired()
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<Request>()
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.CreatedbyId)
