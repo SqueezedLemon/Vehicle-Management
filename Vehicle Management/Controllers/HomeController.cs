@@ -54,12 +54,59 @@ namespace Vehicle_Management.Controllers
 				DropPointLandmark = r.DropPointLandmark,
 				CreatedDate = r.CreatedDate,
 				IsApproved = r.IsApproved,
+				IsUnapproved = r.IsUnapproved,
 				IsCompleted = r.IsCompleted,
 				UserId = r.UserId,
 			}).ToList();
             return View(model);
 		}
 
+		//Approve Request
+
+		[HttpPost]
+		public IActionResult ApproveRequest(int id)
+		{
+			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
+            var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
+            getRequest.IsApproved = true;
+			getRequestStatus.RequestStatusName = "Approved but Not Completed";
+			_dbContext.SaveChanges();
+			return RedirectToAction("ViewVehicles");
+		}
+
+		[HttpGet]
+        public IActionResult ApproveRequest(UserRequest model, int id)
+        {
+            var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
+			var getRequestMessage = _dbContext.RequestMessages.FirstOrDefault(rm => rm.RequestId == id);
+            model.Id = getRequest.Id;
+            model.RequestedDate = getRequest.RequestedDate;
+            model.PickupPoint = getRequest.PickupPoint;
+            model.PickupPointLandmark = getRequest.PickupPointLandmark;
+            model.DropPoint = getRequest.DropPoint;
+            model.DropPointLandmark = getRequest.DropPointLandmark;
+            model.CreatedDate = getRequest.CreatedDate;
+            model.UserId = getRequest.UserId;
+			model.Message = getRequestMessage.Message;
+            return View(model);
+        }
+
+        //Unapprove Request
+        [HttpGet]
+        public IActionResult UnapproveRequest(int id)
+        {
+            var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
+            var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
+            if (getRequest is null)
+            {
+                return NotFound();
+            }
+			getRequest.IsUnapproved = true;
+			getRequest.IsCompleted = true;
+			getRequestStatus.RequestStatusName = "Unapproved";
+            _dbContext.SaveChanges();
+            return RedirectToAction("ViewRequests");
+        }
 
         // View Vehicle Table
         [HttpGet]
