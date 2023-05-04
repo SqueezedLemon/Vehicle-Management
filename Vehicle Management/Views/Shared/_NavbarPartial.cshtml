@@ -3,7 +3,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (!User.IsInRole("Admin"))
+@if (!User.IsInRole("Admin") && !User.IsInRole("Driver"))
 {
     <a class="navbar-brand d-flex align-items-center justify-content-center text-primary" asp-area="" asp-controller="Home" asp-action="Index">
         <div class="navbar-brand-icon rotate-n-15">
@@ -12,10 +12,13 @@
         <div class="navbar-brand-text mx-3">Vehicle Management</div>
     </a>
 }
-<!-- Sidebar Toggle (Topbar) -->
-<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-    <i class="fa fa-bars"></i>
-</button>
+@if (User.IsInRole("Admin") || User.IsInRole("Driver"))
+{
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -223,7 +226,7 @@
     else
     {
         <a class="nav-link" role="button" asp-area="Identity" asp-page="/Account/Login">
-            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Login</span>
+            <span class="mr-2 d-inline text-gray-600 small">Login</span>
         </a>
     }
 </ul>
