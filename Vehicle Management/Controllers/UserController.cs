@@ -17,12 +17,28 @@ namespace Vehicle_Management.Controllers
         }
 
         [HttpGet]
-        public IActionResult Home()
+        public async Task<IActionResult> Home(UserRequestViewModel model)
         {
-            return View();
+            var currentUser = await _userManager.GetUserAsync(User);
+            var request = _dbContext.Requests.ToList();
+            model.UserRequests = request.Where(r => r.UserId == currentUser.Id).Select(r => new UserRequest
+            {
+                Id = r.Id,
+                RequestedDate = r.RequestedDate,
+                PickupPoint = r.PickupPoint,
+                PickupPointLandmark = r.PickupPointLandmark,
+                DropPoint = r.DropPoint,
+                DropPointLandmark = r.DropPointLandmark,
+                CreatedDate = r.CreatedDate,
+                IsApproved = r.IsApproved,
+                IsUnapproved = r.IsUnapproved,
+                IsCompleted = r.IsCompleted,
+                UserId = r.UserId,
+            }).ToList();
+            return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Home(UserRequest model, Request newRequest, RequestMessage newRequestMessage, RequestStatus newRequestStatus)
+        public async Task<IActionResult> Home(UserRequestViewModel model, Request newRequest, RequestMessage newRequestMessage, RequestStatus newRequestStatus)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -32,11 +48,11 @@ namespace Vehicle_Management.Controllers
             _dbContext.SaveChanges();
             int newRequestStatusId = newRequestStatus.Id;
 
-            newRequest.PickupPoint = model.PickupPoint;
-            newRequest.PickupPointLandmark = model.PickupPointLandmark;
-            newRequest.DropPoint = model.DropPoint;
-            newRequest.DropPointLandmark = model.DropPointLandmark;
-            newRequest.RequestedDate = model.RequestedDate;
+            newRequest.PickupPoint = model.UserRequest.PickupPoint;
+            newRequest.PickupPointLandmark = model.UserRequest.PickupPointLandmark;
+            newRequest.DropPoint = model.UserRequest.DropPoint;
+            newRequest.DropPointLandmark = model.UserRequest.DropPointLandmark;
+            newRequest.RequestedDate = model.UserRequest.RequestedDate;
             newRequest.UserId = currentUser.Id;
             newRequest.CreatedbyId = currentUser.Id;
             newRequest.CreatedDate = DateTime.Now;
@@ -45,7 +61,7 @@ namespace Vehicle_Management.Controllers
             _dbContext.SaveChanges();
             int newRequestId = newRequest.Id;
 
-            newRequestMessage.Message = model.Message;
+            newRequestMessage.Message = model.UserRequest.Message;
             newRequestMessage.CreatedDate = DateTime.Now;
             newRequestMessage.RequestId = newRequestId;
             newRequestMessage.CreatedById = currentUser.Id;
