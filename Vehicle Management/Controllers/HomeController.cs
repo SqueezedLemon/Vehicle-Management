@@ -25,7 +25,11 @@ namespace Vehicle_Management.Controllers
 			{
 				return RedirectToAction("Home","User");
             }
-            return View();
+			if (User.IsInRole("Driver"))
+			{
+				return RedirectToAction("ViewTask", "Driver");
+			}
+			return View();
         }
 
 		public IActionResult Privacy()
@@ -64,14 +68,15 @@ namespace Vehicle_Management.Controllers
 		//Approve Request
 
 		[HttpPost]
-		public IActionResult ApproveRequest(int id)
+		public IActionResult ApproveRequest(int id, UserRequest model)
 		{
 			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
             var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
+			getRequest.DriverUserId = model.DriverUserId;
             getRequest.IsApproved = true;
 			getRequestStatus.RequestStatusName = "Approved but Not Completed";
 			_dbContext.SaveChanges();
-			return RedirectToAction("ViewVehicles");
+			return RedirectToAction("ViewRequests");
 		}
 
 		[HttpGet]
