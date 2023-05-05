@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vehicle_Management.Models;
+using Vehicle_Management.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Vehicle_Management.Controllers
 {
@@ -67,6 +69,9 @@ namespace Vehicle_Management.Controllers
             newRequestMessage.CreatedById = currentUser.Id;
             _dbContext.Add(newRequestMessage);
             _dbContext.SaveChanges();
+
+            var notification = new NotificationHub(_dbContext, _userManager);
+            await notification.SendNotificationToAdmins("", currentUser.Id, newRequestId, "Needs Approval");
 
             return RedirectToAction("Home");
 

@@ -1,10 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Vehicle_Management.Data
+﻿namespace Vehicle_Management.Models
 {
-    public class Notification
+    public class NavbarViewModel
+    {
+        public List<NotificationView>? Notifications { get; set; }
+    }
+
+    public class NotificationView
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
