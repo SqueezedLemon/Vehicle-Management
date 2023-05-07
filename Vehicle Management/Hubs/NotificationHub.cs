@@ -44,12 +44,11 @@ namespace Vehicle_Management.Hubs
             await Clients.User(receiverUserId).SendAsync("ReceiveNotification", notificationType);
         }
 
-        public async Task SendNotificationToAdmins(string receiverUserId, string senderUserId, int requestId, string notificationType)
+        public async Task SendNotificationToAdmins(string senderUserId, int requestId, string notificationType)
         {
             // Save the notification to the database
             var notification = new Notification
             {
-                UserId = receiverUserId,
                 CreatedById = senderUserId,
                 RequestId = requestId,
                 Date = DateTime.Now,

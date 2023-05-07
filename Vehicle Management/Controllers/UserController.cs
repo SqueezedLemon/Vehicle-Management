@@ -19,7 +19,7 @@ namespace Vehicle_Management.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Home(UserRequestViewModel model)
+        public async Task<IActionResult> Home(BaseViewModel model)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var request = _dbContext.Requests.ToList();
@@ -40,7 +40,7 @@ namespace Vehicle_Management.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Home(UserRequestViewModel model, Request newRequest, RequestMessage newRequestMessage, RequestStatus newRequestStatus)
+        public async Task<IActionResult> Home(BaseViewModel model, Request newRequest, RequestMessage newRequestMessage, RequestStatus newRequestStatus)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -71,7 +71,7 @@ namespace Vehicle_Management.Controllers
             _dbContext.SaveChanges();
 
             var notification = new NotificationHub(_dbContext, _userManager);
-            await notification.SendNotificationToAdmins("", currentUser.Id, newRequestId, "Needs Approval");
+            await notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "Needs Approval");
 
             return RedirectToAction("Home");
 

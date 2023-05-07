@@ -1,4 +1,4 @@
-﻿@model Vehicle_Management.Models.UserRequestViewModel
+﻿@model Vehicle_Management.Models.BaseViewModel
 @inject UserManager<ApplicationUser> userManager
 @{
     var user = await userManager.GetUserAsync(User);

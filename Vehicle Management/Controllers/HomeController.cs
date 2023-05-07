@@ -45,10 +45,10 @@ namespace Vehicle_Management.Controllers
 
 		//View All requests
 		[HttpGet]
-		public IActionResult ViewRequests(List<UserRequest> model)
+		public IActionResult ViewRequests(BaseViewModel model)
 		{
 			var request = _dbContext.Requests.ToList();
-			model = request.Select(r => new UserRequest
+			model.UserRequests = request.Select(r => new UserRequest
 			{
 				Id = r.Id,
 				RequestedDate = r.RequestedDate,
@@ -68,11 +68,11 @@ namespace Vehicle_Management.Controllers
 		//Approve Request
 
 		[HttpPost]
-		public IActionResult ApproveRequest(int id, UserRequest model)
+		public IActionResult ApproveRequest(int id, BaseViewModel model)
 		{
 			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
             var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
-			getRequest.DriverUserId = model.DriverUserId;
+			getRequest.DriverUserId = model.UserRequest.DriverUserId;
             getRequest.IsApproved = true;
 			getRequestStatus.RequestStatusName = "Approved but Not Completed";
 			_dbContext.SaveChanges();
@@ -80,19 +80,19 @@ namespace Vehicle_Management.Controllers
 		}
 
 		[HttpGet]
-        public IActionResult ApproveRequest(UserRequest model, int id)
+        public IActionResult ApproveRequest(BaseViewModel model, int id)
         {
             var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
 			var getRequestMessage = _dbContext.RequestMessages.FirstOrDefault(rm => rm.RequestId == id);
-            model.Id = getRequest.Id;
-            model.RequestedDate = getRequest.RequestedDate;
-            model.PickupPoint = getRequest.PickupPoint;
-            model.PickupPointLandmark = getRequest.PickupPointLandmark;
-            model.DropPoint = getRequest.DropPoint;
-            model.DropPointLandmark = getRequest.DropPointLandmark;
-            model.CreatedDate = getRequest.CreatedDate;
-            model.UserId = getRequest.UserId;
-			model.Message = getRequestMessage.Message;
+            model.UserRequest.Id = getRequest.Id;
+            model.UserRequest.RequestedDate = getRequest.RequestedDate;
+            model.UserRequest.PickupPoint = getRequest.PickupPoint;
+            model.UserRequest.PickupPointLandmark = getRequest.PickupPointLandmark;
+            model.UserRequest.DropPoint = getRequest.DropPoint;
+            model.UserRequest.DropPointLandmark = getRequest.DropPointLandmark;
+            model.UserRequest.CreatedDate = getRequest.CreatedDate;
+            model.UserRequest.UserId = getRequest.UserId;
+			model.UserRequest.Message = getRequestMessage.Message;
             return View(model);
         }
 
@@ -115,10 +115,10 @@ namespace Vehicle_Management.Controllers
 
         // View Vehicle Table
         [HttpGet]
-		public IActionResult ViewVehicles()
+		public IActionResult ViewVehicles(BaseViewModel model)
 		{
             var vehicles = _dbContext.Vehicles.ToList();
-            List<HomeModel> homeModels = vehicles.Select(v => new HomeModel
+            model.Vehicles = vehicles.Select(v => new VehicleView
             {
                 Id = v.Id,
                 RegistrationNumber = v.RegistrationNumber,
@@ -134,26 +134,26 @@ namespace Vehicle_Management.Controllers
                 Fuel = v.Fuel,
                 IsAvailable = v.IsAvailable
             }).ToList();
-            return View(homeModels);
+            return View(model);
 		}
 
 		//Add New Vehicle
 
 		[HttpPost]
-		public async Task<IActionResult> AddVehicle(HomeModel model, Vehicle newVehicle)
+		public async Task<IActionResult> AddVehicle(BaseViewModel model, Vehicle newVehicle)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            newVehicle.RegistrationNumber = model.RegistrationNumber;
-			newVehicle.ManufactureCompany = model.ManufactureCompany;
-			newVehicle.VehicleModel = model.VehicleModel;
-			newVehicle.EngineCapacity = model.EngineCapacity;
-			newVehicle.ManufacturedYear = model.ManufacturedYear;
-			newVehicle.PurchasedOn = model.PurchasedOn;
-			newVehicle.Color = model.Color;
-			newVehicle.EngineNumber = model.EngineNumber;
-			newVehicle.ChasisNumber = model.ChasisNumber;
-			newVehicle.PassengerCapacity = model.PassengerCapacity;
-			newVehicle.Fuel = model.Fuel;
+            newVehicle.RegistrationNumber = model.Vehicle.RegistrationNumber;
+			newVehicle.ManufactureCompany = model.Vehicle.ManufactureCompany;
+			newVehicle.VehicleModel = model.Vehicle.VehicleModel;
+			newVehicle.EngineCapacity = model.Vehicle.EngineCapacity;
+			newVehicle.ManufacturedYear = model.Vehicle.ManufacturedYear;
+			newVehicle.PurchasedOn = model.Vehicle.PurchasedOn;
+			newVehicle.Color = model.Vehicle.Color;
+			newVehicle.EngineNumber = model.Vehicle.EngineNumber;
+			newVehicle.ChasisNumber = model.Vehicle.ChasisNumber;
+			newVehicle.PassengerCapacity = model.Vehicle.PassengerCapacity;
+			newVehicle.Fuel = model.Vehicle.Fuel;
 			newVehicle.IsAvailable = true;
 			newVehicle.CreatedDate = DateTime.Now;
             newVehicle.CreatedById = currentUser.Id;
@@ -171,42 +171,42 @@ namespace Vehicle_Management.Controllers
 		//Edit Vehicle Data
 
 		[HttpPost]
-		public IActionResult EditVehicle(int id, HomeModel model)
+		public IActionResult EditVehicle(int id, BaseViewModel model)
 		{
 			var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
-			getVehicle.RegistrationNumber = model.RegistrationNumber;
-			getVehicle.ManufactureCompany = model.ManufactureCompany;
-			getVehicle.VehicleModel = model.VehicleModel;
-			getVehicle.EngineCapacity = model.EngineCapacity;
-			getVehicle.ManufacturedYear = model.ManufacturedYear;
-			getVehicle.PurchasedOn = model.PurchasedOn;
-			getVehicle.Color = model.Color;
-			getVehicle.EngineNumber = model.EngineNumber;
-			getVehicle.ChasisNumber = model.ChasisNumber;
-			getVehicle.PassengerCapacity = model.PassengerCapacity;
-			getVehicle.Fuel = model.Fuel;
-			getVehicle.IsAvailable = model.IsAvailable;
+			getVehicle.RegistrationNumber = model.Vehicle.RegistrationNumber;
+			getVehicle.ManufactureCompany = model.Vehicle.ManufactureCompany;
+			getVehicle.VehicleModel = model.Vehicle.VehicleModel;
+			getVehicle.EngineCapacity = model.Vehicle.EngineCapacity;
+			getVehicle.ManufacturedYear = model.Vehicle.ManufacturedYear;
+			getVehicle.PurchasedOn = model.Vehicle.PurchasedOn;
+			getVehicle.Color = model.Vehicle.Color;
+			getVehicle.EngineNumber = model.Vehicle.EngineNumber;
+			getVehicle.ChasisNumber = model.Vehicle.ChasisNumber;
+			getVehicle.PassengerCapacity = model.Vehicle.PassengerCapacity;
+			getVehicle.Fuel = model.Vehicle.Fuel;
+			getVehicle.IsAvailable = model.Vehicle.IsAvailable;
 			_dbContext.SaveChanges();
 			return RedirectToAction("ViewVehicles");
 		}
 
 		[HttpGet]
-		public IActionResult EditVehicle(HomeModel model, int id)
+		public IActionResult EditVehicle(BaseViewModel model, int id)
 		{
 			var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
-			model.Id = getVehicle.Id;
-			model.RegistrationNumber = getVehicle.RegistrationNumber;
-			model.ManufactureCompany = getVehicle.ManufactureCompany;
-			model.VehicleModel = getVehicle.VehicleModel;
-			model.EngineCapacity = getVehicle.EngineCapacity;
-			model.ManufacturedYear = getVehicle.ManufacturedYear;
-			model.PurchasedOn = getVehicle.PurchasedOn;
-			model.Color = getVehicle.Color;
-			model.EngineNumber = getVehicle.EngineNumber;
-			model.ChasisNumber = getVehicle.ChasisNumber;
-			model.PassengerCapacity = getVehicle.PassengerCapacity;
-			model.Fuel = getVehicle.Fuel;
-			model.IsAvailable = getVehicle.IsAvailable;				
+			model.Vehicle.Id = getVehicle.Id;
+			model.Vehicle.RegistrationNumber = getVehicle.RegistrationNumber;
+			model.Vehicle.ManufactureCompany = getVehicle.ManufactureCompany;
+			model.Vehicle.VehicleModel = getVehicle.VehicleModel;
+			model.Vehicle.EngineCapacity = getVehicle.EngineCapacity;
+			model.Vehicle.ManufacturedYear = getVehicle.ManufacturedYear;
+			model.Vehicle.PurchasedOn = getVehicle.PurchasedOn;
+			model.Vehicle.Color = getVehicle.Color;
+			model.Vehicle.EngineNumber = getVehicle.EngineNumber;
+			model.Vehicle.ChasisNumber = getVehicle.ChasisNumber;
+			model.Vehicle.PassengerCapacity = getVehicle.PassengerCapacity;
+			model.Vehicle.Fuel = getVehicle.Fuel;
+			model.Vehicle.IsAvailable = getVehicle.IsAvailable;				
 			return View(model);
 		}
 
@@ -222,7 +222,6 @@ namespace Vehicle_Management.Controllers
 			_dbContext.Remove(getVehicle);
 			_dbContext.SaveChanges();
 			return RedirectToAction("ViewVehicles");
-
 		}
 	}
 }

@@ -19,11 +19,11 @@ namespace Vehicle_Management.Controllers
 		}
 
 		// View Tasks
-		public async Task<ActionResult> ViewTask(List<UserRequest> model)
+		public async Task<ActionResult> ViewTask(BaseViewModel model)
 		{
 			var currentUser = await _userManager.GetUserAsync(User);
 			var request = _dbContext.Requests.ToList();
-			model = request.Where(r => r.DriverUserId == currentUser.Id).Select(r => new UserRequest
+			model.UserRequests = request.Where(r => r.DriverUserId == currentUser.Id).Select(r => new UserRequest
 			{
 				Id = r.Id,
 				RequestedDate = r.RequestedDate,

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vehicle_Management.Models
 {
-	public class HomeModel
+	public class VehicleView
 	{
 		public int Id { get; set; }
 		[Required]

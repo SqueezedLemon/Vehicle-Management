@@ -1,10 +1,5 @@
 ﻿namespace Vehicle_Management.Models
 {
-    public class NavbarViewModel
-    {
-        public List<NotificationView>? Notifications { get; set; }
-    }
-
     public class NotificationView
     {
         public int Id { get; set; }

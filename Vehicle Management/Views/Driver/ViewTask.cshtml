@@ -1,4 +1,4 @@
-﻿@model List<Vehicle_Management.Models.UserRequest>
+﻿@model Vehicle_Management.Models.BaseViewModel
 @inject UserManager<ApplicationUser> userManager
 @{
     ViewData["Title"] = "Tasks";
@@ -53,7 +53,7 @@
                             <th class="text-center">Requested By</th>
                             </tfoot>
                             <tbody>
-                                @foreach (var request in Model)
+                                @foreach (var request in Model.UserRequests)
                                 {
                                     @if (request.IsApproved && !request.IsCompleted)
                                     {
@@ -106,7 +106,7 @@
                             <th class="text-center">Approved Status</th>
                             </tfoot>
                             <tbody>
-                                @foreach (var request in Model)
+                                @foreach (var request in Model.UserRequests)
                                 {
                                     @if (request.IsCompleted)
                                     {

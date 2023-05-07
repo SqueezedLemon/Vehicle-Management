@@ -14,11 +14,12 @@ namespace Vehicle_Management.Controllers
             _dbContext = dbContext;
         }
 
-        public async Task<PartialViewResult> NavbarView(NavbarViewModel model)
+        public async Task<PartialViewResult> NavbarView(BaseViewModel model)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser != null)
             {
+                Console.WriteLine(User.IsInRole("Admin"));
                 if (User.IsInRole("Admin"))
                 {
                     var notifications = _dbContext.Notifications.ToList();

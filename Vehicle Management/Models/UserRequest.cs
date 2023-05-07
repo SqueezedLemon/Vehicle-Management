@@ -1,10 +1,5 @@
 ﻿namespace Vehicle_Management.Models
 {
-    public class UserRequestViewModel
-    {
-        public UserRequest? UserRequest { get; set; }
-        public List<UserRequest>? UserRequests { get; set; }
-    }
     public class UserRequest
     {
         public int Id { get; set; }

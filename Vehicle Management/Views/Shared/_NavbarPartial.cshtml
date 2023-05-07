@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Vehicle_Management.Data;
-@model Vehicle_Management.Models.NavbarViewModel;
+@model Vehicle_Management.Models.BaseViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -79,9 +79,9 @@
             <h6 class="dropdown-header">
                 Notifications
             </h6>
-            @if (User.IsInRole("Admin"))
+            @if (Model != null && Model.Notifications != null)
             {
-                @foreach(var notification in Model.Notifications)
+                @foreach (var notification in Model.Notifications)
                 {
                     @if (notification.NotificationType == "Needs Approval")
                     {
@@ -93,14 +93,14 @@
                             </div>
                             <div>
                                 <div class="small text-gray-500">@notification.CreatedDate.ToString("yyyy-MM-dd")</div>
-                                    @{
-                                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
-                                    }
+                                @{
+                                    var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                                }
                                 <span class="font-weight-bold">Request by @notificationSender needs approval</span>
                             </div>
                         </a>
                     }
-                    @if (notification.NotificationType == "Needs Approval")
+                    @if (notification.NotificationType == "Request Completed")
                     {
                         <a class="dropdown-item d-flex align-items-center" href="#">
                             <div class="mr-3">
