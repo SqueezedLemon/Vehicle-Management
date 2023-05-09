@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration;
+using Vehicle_Management.Hubs;
+using Vehicle_Management.Services;
 using Vehicle_Management.wwwroot.Services;
 
 
@@ -25,6 +27,9 @@ builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<NotificationHub>();
+builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 
@@ -45,6 +50,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Map SignalR hub
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseAuthorization();
 
 app.MapControllerRoute(

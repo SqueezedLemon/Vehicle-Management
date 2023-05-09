@@ -2,6 +2,8 @@
 using Vehicle_Management.Models;
 using Vehicle_Management.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Vehicle_Management.Data;
+using Vehicle_Management.Services;
 
 namespace Vehicle_Management.Controllers
 {
@@ -10,12 +12,16 @@ namespace Vehicle_Management.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
+        private readonly NotificationHub _notification;
+        private readonly NotificationService _notificationService;
 
-        public UserController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+        public UserController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationHub notification, NotificationService notificationService)
         {
             _userManager = userManager;
             _logger = logger;
             _dbContext = dbContext;
+            _notification = notification;
+            _notificationService = notificationService;
         }
 
         [HttpGet]
@@ -37,6 +43,7 @@ namespace Vehicle_Management.Controllers
                 IsCompleted = r.IsCompleted,
                 UserId = r.UserId,
             }).ToList();
+            model.Notifications = _notificationService.getUserNotification(currentUser.Id);
             return View(model);
         }
         [HttpPost]
@@ -70,8 +77,10 @@ namespace Vehicle_Management.Controllers
             _dbContext.Add(newRequestMessage);
             _dbContext.SaveChanges();
 
-            var notification = new NotificationHub(_dbContext, _userManager);
-            await notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "Needs Approval");
+            if (currentUser != null)
+            {
+               await _notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "Needs Approval");
+            }
 
             return RedirectToAction("Home");
 

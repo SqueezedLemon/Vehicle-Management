@@ -18,11 +18,19 @@ namespace Vehicle_Management.Data
         public DbSet<RequestMessage> RequestMessages { get; set; }
         public DbSet<RequestHistory> RequestHistories { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<HubConnection> HubConnections { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<HubConnection>()
+               .HasOne(hc => hc.User)
+               .WithOne()
+               .HasForeignKey<HubConnection>(rs => rs.UserId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Vehicle>()
                 .HasOne(rs => rs.User)
@@ -140,7 +148,6 @@ namespace Vehicle_Management.Data
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Notification>()

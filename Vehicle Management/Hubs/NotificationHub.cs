@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Vehicle_Management.Controllers;
 using Vehicle_Management.Hubs;
 
 namespace Vehicle_Management.Hubs
@@ -9,21 +10,21 @@ namespace Vehicle_Management.Hubs
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public NotificationHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+        public NotificationHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger, IHubContext<NotificationHub> hubContext)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _logger = logger;
+            _hubContext = hubContext;
         }
 
         public override async Task OnConnectedAsync()
         {
-            if (Context.User.IsInRole("Admin"))
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, "Admin");
-            }
-
             await base.OnConnectedAsync();
+            await Clients.Caller.SendAsync("OnConnected");
         }
 
         public async Task SendNotification(string receiverUserId, string senderUserId, int requestId, string notificationType, string targatedRole)
@@ -59,9 +60,16 @@ namespace Vehicle_Management.Hubs
             _dbContext.Notifications.Add(notification);
             await _dbContext.SaveChangesAsync();
 
+            var senderUser = _dbContext.Users.FirstOrDefault(u => u.Id == senderUserId);
             var admins = await _userManager.GetUsersInRoleAsync("Admin");
-            var adminIds = admins.Select(u => u.Id);
-            await Clients.Groups(adminIds).SendAsync("ReceiveNotification", notificationType);
+            if (admins != null)
+            {
+                var adminIds = admins.Select(u => u.Id);
+                foreach (var adminId in adminIds)
+                {
+                    await _hubContext.Clients.User(adminId).SendAsync("ReceiveAdminNotification", senderUser.Name, notification.RequestId, notification.NotificationType);
+                }
+            }
         }
     }
 }

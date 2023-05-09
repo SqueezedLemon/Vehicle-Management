@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Vehicle_Management.Models;
+using Vehicle_Management.Services;
 
 namespace Vehicle_Management.Controllers
 {
@@ -10,15 +11,17 @@ namespace Vehicle_Management.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HomeController> _logger;
 		private readonly ApplicationDbContext _dbContext;
+		private readonly NotificationService _notificationService;
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationService notificationService)
 		{
 			_userManager = userManager;
 			_logger = logger;
 			_dbContext = dbContext;
+			_notificationService = notificationService;
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(BaseViewModel model)
 		{
 
 			if (User.IsInRole("User"))
@@ -29,7 +32,9 @@ namespace Vehicle_Management.Controllers
 			{
 				return RedirectToAction("ViewTask", "Driver");
 			}
-			return View();
+
+			model.Notifications = _notificationService.getAdminNotification();
+            return View(model);
         }
 
 		public IActionResult Privacy()
@@ -62,6 +67,7 @@ namespace Vehicle_Management.Controllers
 				IsCompleted = r.IsCompleted,
 				UserId = r.UserId,
 			}).ToList();
+            model.Notifications = _notificationService.getAdminNotification();
             return View(model);
 		}
 
@@ -82,19 +88,25 @@ namespace Vehicle_Management.Controllers
 		[HttpGet]
         public IActionResult ApproveRequest(BaseViewModel model, int id)
         {
-            var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
+			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
 			var getRequestMessage = _dbContext.RequestMessages.FirstOrDefault(rm => rm.RequestId == id);
-            model.UserRequest.Id = getRequest.Id;
-            model.UserRequest.RequestedDate = getRequest.RequestedDate;
-            model.UserRequest.PickupPoint = getRequest.PickupPoint;
-            model.UserRequest.PickupPointLandmark = getRequest.PickupPointLandmark;
-            model.UserRequest.DropPoint = getRequest.DropPoint;
-            model.UserRequest.DropPointLandmark = getRequest.DropPointLandmark;
-            model.UserRequest.CreatedDate = getRequest.CreatedDate;
-            model.UserRequest.UserId = getRequest.UserId;
-			model.UserRequest.Message = getRequestMessage.Message;
+			if (getRequest != null && getRequestMessage!=null)
+			{          
+                model.UserRequest = new UserRequest();
+                model.UserRequest.Id = getRequest.Id;
+                model.UserRequest.RequestedDate = getRequest.RequestedDate;
+                model.UserRequest.PickupPoint = getRequest.PickupPoint;
+                model.UserRequest.PickupPointLandmark = getRequest.PickupPointLandmark;
+                model.UserRequest.DropPoint = getRequest.DropPoint;
+                model.UserRequest.DropPointLandmark = getRequest.DropPointLandmark;
+                model.UserRequest.CreatedDate = getRequest.CreatedDate;
+                model.UserRequest.UserId = getRequest.UserId;
+                model.UserRequest.Message = getRequestMessage.Message;
+            }
+            model.Notifications = _notificationService.getAdminNotification();
             return View(model);
         }
+    
 
         //Unapprove Request
         [HttpGet]
@@ -134,6 +146,7 @@ namespace Vehicle_Management.Controllers
                 Fuel = v.Fuel,
                 IsAvailable = v.IsAvailable
             }).ToList();
+            model.Notifications = _notificationService.getAdminNotification();
             return View(model);
 		}
 
@@ -163,9 +176,10 @@ namespace Vehicle_Management.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AddVehicle()
+		public IActionResult AddVehicle(BaseViewModel model)
 		{
-			return View();
+            model.Notifications = _notificationService.getAdminNotification();
+            return View(model);
 		}
 
 		//Edit Vehicle Data
@@ -194,7 +208,8 @@ namespace Vehicle_Management.Controllers
 		public IActionResult EditVehicle(BaseViewModel model, int id)
 		{
 			var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
-			model.Vehicle.Id = getVehicle.Id;
+            model.Vehicle = new VehicleView();
+            model.Vehicle.Id = getVehicle.Id;
 			model.Vehicle.RegistrationNumber = getVehicle.RegistrationNumber;
 			model.Vehicle.ManufactureCompany = getVehicle.ManufactureCompany;
 			model.Vehicle.VehicleModel = getVehicle.VehicleModel;
@@ -206,8 +221,10 @@ namespace Vehicle_Management.Controllers
 			model.Vehicle.ChasisNumber = getVehicle.ChasisNumber;
 			model.Vehicle.PassengerCapacity = getVehicle.PassengerCapacity;
 			model.Vehicle.Fuel = getVehicle.Fuel;
-			model.Vehicle.IsAvailable = getVehicle.IsAvailable;				
-			return View(model);
+			model.Vehicle.IsAvailable = getVehicle.IsAvailable;
+
+            model.Notifications = _notificationService.getAdminNotification();
+            return View(model);
 		}
 
 		//Delete Existing Vehicle

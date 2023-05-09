@@ -294,6 +294,29 @@ namespace Vehicle_Management.Migrations
                     b.ToTable("Driver");
                 });
 
+            modelBuilder.Entity("Vehicle_Management.Data.HubConnection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("HubConnection");
+                });
+
             modelBuilder.Entity("Vehicle_Management.Data.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -303,6 +326,7 @@ namespace Vehicle_Management.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedById")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -327,7 +351,6 @@ namespace Vehicle_Management.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -640,6 +663,17 @@ namespace Vehicle_Management.Migrations
                     b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.HubConnection", b =>
+                {
+                    b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.HubConnection", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

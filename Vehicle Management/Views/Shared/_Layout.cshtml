@@ -2,6 +2,7 @@
 @using Vehicle_Management.Data;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,8 +53,7 @@
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
-                    <partial name="_NavbarPartial" asp-controller="Notification" asp-action="NavbarView" />
-                    @*<partial name="_NavbarPartial" />*@
+                    <partial name="_NavbarPartial" />
                 </nav>
                 <!-- End of Topbar -->
 
@@ -100,5 +100,8 @@
     <script src="~/js/jquery.stellar.min.js"></script>
     <script src="~/js/jquery.animateNumber.min.js"></script>
     <script src="~/js/jquery.waypoints.min.js"></script>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/Notification.js"></script>
 </body>
 </html>
