@@ -33,7 +33,7 @@ connection.on("ReceiveAdminNotification", (senderName, requestId, notificationTy
     dateElement.appendChild(dateText);
     var senderNameText = document.createTextNode("Request by " + senderName + " needs approval");
     if (notificationType == "Request Completed") {
-        senderNameText = document.createTextNode("Request by "+ senderName + " has completed a request.");
+        senderNameText = document.createTextNode(senderName + " has completed a request.");
     }
     var senderNameElement = document.createElement("span");
     senderNameElement.classList.add("font-weight-bold");
@@ -48,7 +48,25 @@ connection.on("ReceiveAdminNotification", (senderName, requestId, notificationTy
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+    //$(document).ready(function () {
+    //    // Attach event listener to alertsDropdown element
+    //    $('#alertsDropdown').on('click', function () {
+    //        console.log('alertsDropdown clicked'); 
+    //        connection.invoke('ReadCompletedNotifications'); 
+    //    });
+    //});
+
     connection.start()
         .then(() => console.log("SignalR connection established."))
         .catch((error) => console.error(error));
 });
+
+//document.getElementById("alertsDropdown").addEventListener("click", function () {
+//    connection.invoke("ReadCompletedNotifications")
+//        .then(() => {
+//            console.log("ReadCompletedNotifications method invoked successfully.");
+//        })
+//        .catch((error) => {
+//            console.error("Error invoking ReadCompletedNotifications method: " + error);
+//        });
+//});

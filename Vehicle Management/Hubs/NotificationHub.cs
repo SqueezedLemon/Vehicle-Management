@@ -71,5 +71,18 @@ namespace Vehicle_Management.Hubs
                 }
             }
         }
+
+        public async Task ReadCompletedNotifications()
+        {
+            var notifications = _dbContext.Notifications.Where(n => n.NotificationType == "Request Completed" && n.IsRead == false && n.TargetedRole == "Admin").ToList();
+            if (notifications != null)
+            { 
+                foreach (var notification in notifications) 
+                {
+                    notification.IsRead = true;
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -4,6 +4,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+
 @if (!User.IsInRole("Admin") && !User.IsInRole("Driver"))
 {
     <a class="navbar-brand d-flex align-items-center justify-content-center text-primary" asp-area="" asp-controller="Home" asp-action="Index">
@@ -71,7 +72,7 @@
            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-bell fa-fw"></i>
             <!-- Counter - Alerts -->
-            <span class="badge badge-danger badge-counter">3+</span>
+            <span class="badge badge-danger badge-counter">3</span>
         </a>
         <!-- Dropdown - Alerts -->
         <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -82,7 +83,7 @@
             <div id="alertsDropdownBody">
                 @if (Model != null && Model.Notifications != null)
                 {
-                    @foreach (var notification in Model.Notifications.Take(3))
+                    @foreach (var notification in Model.Notifications)
                     {
                         @if (notification.NotificationType == "Needs Approval")
                         {
@@ -261,3 +262,19 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/Notification.js"></script>
+<script> 
+    document.addEventListener("DOMContentLoaded", function () {
+        $(document).ready(function () {
+            // Attach event listener to alertsDropdown element
+            $('#alertsDropdown').on('click', function () {
+                connection.invoke("ReadCompletedNotifications");
+            });
+        });
+    });
+</script>
+
+

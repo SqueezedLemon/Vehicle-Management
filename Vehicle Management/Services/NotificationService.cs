@@ -27,7 +27,7 @@ namespace Vehicle_Management.Services
 
         public List<NotificationView> getAdminNotification()
         {
-            var Notifications = _dbContext.Notifications.Where(n => n.TargetedRole == "Admin").OrderByDescending(n => n.Date).Select(n => new NotificationView
+            var Notifications = _dbContext.Notifications.Where(n => n.TargetedRole == "Admin" && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
             {
                 Id = n.Id,
                 NotificationType = n.NotificationType,

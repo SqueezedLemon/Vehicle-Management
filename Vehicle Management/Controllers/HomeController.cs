@@ -81,6 +81,12 @@ namespace Vehicle_Management.Controllers
 			getRequest.DriverUserId = model.UserRequest.DriverUserId;
             getRequest.IsApproved = true;
 			getRequestStatus.RequestStatusName = "Approved but Not Completed";
+
+			var getNotification = _dbContext.Notifications.FirstOrDefault(n => n.RequestId == id && n.TargetedRole == "Admin");
+			if (getNotification != null)
+			{
+                getNotification.IsRead = true;
+            }
 			_dbContext.SaveChanges();
 			return RedirectToAction("ViewRequests");
 		}
