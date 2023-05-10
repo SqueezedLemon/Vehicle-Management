@@ -67,12 +67,36 @@
     </li>
 
     <!-- Nav Item - Alerts -->
-    <li class="nav-item dropdown no-arrow mx-1">
+     <li class="nav-item dropdown no-arrow mx-1">
+        @{
+            var user = await UserManager.GetUserAsync(User);
+            @if (user != null)
+            {
+                <input type="hidden" id="userId" value=@user.Id>
+            }
+        }
+        <input type="hidden" id="userId" value=@user.Id>
+        @if (User.IsInRole("Admin"))
+        {
+            <input type="hidden" id="userRole" value="Admin">
+        }
+        @if (User.IsInRole("User"))
+        {
+            <input type="hidden" id="userRole" value="User">
+        }
+        @if (User.IsInRole("Driver"))
+        {
+            <input type="hidden" id="userRole" value="Driver">
+        }
         <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-bell fa-fw"></i>
+            @if (Model != null && Model.Notifications != null)
+            {
+                <input type="hidden" id="notificationCount" value=@Model.Notifications.Count()>
+            }
             <!-- Counter - Alerts -->
-            <span class="badge badge-danger badge-counter">3</span>
+            <span id="alertCounter" class="badge badge-danger badge-counter"></span>
         </a>
         <!-- Dropdown - Alerts -->
         <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -85,39 +109,80 @@
                 {
                     @foreach (var notification in Model.Notifications)
                     {
-                        @if (notification.NotificationType == "Needs Approval")
+                        @if(User.IsInRole("Admin"))
                         {
-                            <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@notification.RequestId">
-                                <div class="mr-3">
-                                    <div class="icon-circle bg-primary">
-                                        <i class="fas fa-file-alt text-white"></i>
+                            @if (notification.NotificationType == "Needs Approval")
+                            {
+                                <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@notification.RequestId">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="small text-gray-500">@notification.Date</div>
-                                    @{
-                                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
-                                    }
-                                    <span class="font-weight-bold">Request by @notificationSender.Name needs approval</span>
-                                </div>
-                            </a>
+                                    <div>
+                                        <div class="small text-gray-500">@notification.Date</div>
+                                        @{
+                                            var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                                        }
+                                        <span class="font-weight-bold">Request by @notificationSender.Name needs approval</span>
+                                    </div>
+                                </a>
+                            }
+                            @if (notification.NotificationType == "Request Completed")
+                            {
+                                <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">@notification.Date</div>
+                                        @{
+                                            var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                                        }
+                                        <span class="font-weight-bold">@notificationSender.Name has completed a request.</span>
+                                    </div>
+                                </a>
+                            }
                         }
-                        @if (notification.NotificationType == "Request Completed")
+
+                        @if (User.IsInRole("User"))
                         {
-                            <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
-                                <div class="mr-3">
-                                    <div class="icon-circle bg-primary">
-                                        <i class="fas fa-file-alt text-white"></i>
+                            @if (notification.NotificationType == "Is Approved")
+                            {
+                                <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="small text-gray-500">@notification.Date</div>
-                                    @{
-                                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
-                                    }
-                                    <span class="font-weight-bold">@notificationSender.Name has completed a request.</span>
-                                </div>
-                            </a>
+                                    <div>
+                                        <div class="small text-gray-500">@notification.Date</div>
+                                        @{
+                                            var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                                        }
+                                            <span class="font-weight-bold">@notificationSender.Name has approved your request.</span>
+                                    </div>
+                                </a>
+                            }
+                        }
+                        @if (User.IsInRole("Driver"))
+                        {
+                            @if (notification.NotificationType == "Is Pending")
+                            {
+                                <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">@notification.Date</div>
+                                        <span class="font-weight-bold">A new request is pending.</span>
+                                    </div>
+                                </a>
+                            }
                         }
                     }
                 }
@@ -268,13 +333,60 @@
 <script src="~/js/Notification.js"></script>
 <script> 
     document.addEventListener("DOMContentLoaded", function () {
+        var userId = document.getElementById("userId").value;
+        var userRole = document.getElementById("userRole").value;
+        var notificationCounter = document.getElementById("alertCounter");
+        var notificationCount = parseInt(document.getElementById("notificationCount").value);
+
+        if (notificationCount !== 0) {
+            notificationCounter.textContent = notificationCount.toString();
+            notificationCounter.style.display = "inline-block";
+        } else {
+            notificationCounter.style.display = "none";
+        }
+
+        connection.on("ReceiveAdminNotification", function (senderName, requestId, notificationType) {
+            notificationCount = notificationCount + 1;
+
+            if (notificationCount !== 0) {
+                notificationCounter.textContent = notificationCount.toString();
+                notificationCounter.style.display = "inline-block";
+            } else {
+                notificationCounter.style.display = "none";
+            }
+        });
+
+        connection.on("ReceiveNotification", function (senderName, requestId, notificationType) {
+            notificationCount = notificationCount + 1;
+
+            if (notificationCount !== 0) {
+                notificationCounter.textContent = notificationCount.toString();
+                notificationCounter.style.display = "inline-block";
+            } else {
+                notificationCounter.style.display = "none";
+            }
+        });
+
+
         $(document).ready(function () {
             // Attach event listener to alertsDropdown element
             $('#alertsDropdown').on('click', function () {
-                connection.invoke("ReadCompletedNotifications");
+                if(userRole == "Admin")
+                {
+                    connection.invoke("ReadCompletedNotifications");
+                }
+                if(userRole == "User")
+                {
+                    connection.invoke("ReadApprovedNotifications", userId);
+                }
+                if (userRole == "Driver") 
+                {
+                    connection.invoke("ReadPendingNotifications", userId);
+                }
+                notificationCounter.textContent = "0";
+                notificationCounter.style.display = "none";
             });
         });
     });
 </script>
-
 

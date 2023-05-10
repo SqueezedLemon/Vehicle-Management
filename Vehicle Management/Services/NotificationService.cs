@@ -15,10 +15,11 @@ namespace Vehicle_Management.Services
 
         public List<NotificationView> getUserNotification(string userId)
         {
-            var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId).OrderByDescending(n => n.Date).Select(n => new NotificationView
+            var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
             {
                 Id = n.Id,
                 NotificationType = n.NotificationType,
+                CreatedById = n.CreatedById,
                 RequestId = n.RequestId,
                 Date = n.Date
             }).ToList();
@@ -40,10 +41,11 @@ namespace Vehicle_Management.Services
 
         public List<NotificationView> getDriverNotification(string userId)
         {
-            var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId).OrderByDescending(n => n.Date).Select(n => new NotificationView
+            var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
             {
                 Id = n.Id,
                 NotificationType = n.NotificationType,
+                CreatedById = n.CreatedById,
                 RequestId = n.RequestId,
                 Date = n.Date
             }).ToList();

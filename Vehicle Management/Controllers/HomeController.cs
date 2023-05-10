@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Vehicle_Management.Data;
+using Vehicle_Management.Hubs;
 using Vehicle_Management.Models;
 using Vehicle_Management.Services;
 
@@ -11,13 +13,15 @@ namespace Vehicle_Management.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HomeController> _logger;
 		private readonly ApplicationDbContext _dbContext;
+		private readonly NotificationHub _notification;
 		private readonly NotificationService _notificationService;
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationService notificationService)
+		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationService notificationService, NotificationHub notification)
 		{
 			_userManager = userManager;
 			_logger = logger;
 			_dbContext = dbContext;
+			_notification = notification;
 			_notificationService = notificationService;
 		}
 
@@ -74,7 +78,7 @@ namespace Vehicle_Management.Controllers
 		//Approve Request
 
 		[HttpPost]
-		public IActionResult ApproveRequest(int id, BaseViewModel model)
+		public async Task<IActionResult> ApproveRequest(int id, BaseViewModel model)
 		{
 			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
             var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
@@ -87,7 +91,15 @@ namespace Vehicle_Management.Controllers
 			{
                 getNotification.IsRead = true;
             }
-			_dbContext.SaveChanges();
+
+            _dbContext.SaveChanges();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null)
+            {
+                await _notification.SendNotification(getRequest.UserId , currentUser.Id, getRequest.Id, "Is Approved" , "User");
+                await _notification.SendNotification(getRequest.DriverUserId, currentUser.Id, getRequest.Id, "Is Pending", "Driver");
+            }
 			return RedirectToAction("ViewRequests");
 		}
 

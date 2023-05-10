@@ -41,8 +41,9 @@ namespace Vehicle_Management.Hubs
             _dbContext.Notifications.Add(notification);
             await _dbContext.SaveChangesAsync();
 
+            var senderUser = _dbContext.Users.FirstOrDefault(u => u.Id == senderUserId);
             // Send the notification to the specified user
-            await Clients.User(receiverUserId).SendAsync("ReceiveNotification", notificationType);
+            await _hubContext.Clients.User(receiverUserId).SendAsync("ReceiveNotification", senderUser.Name, notification.RequestId, notification.NotificationType);
         }
 
         public async Task SendNotificationToAdmins(string senderUserId, int requestId, string notificationType)
@@ -74,10 +75,36 @@ namespace Vehicle_Management.Hubs
 
         public async Task ReadCompletedNotifications()
         {
-            var notifications = _dbContext.Notifications.Where(n => n.NotificationType == "Request Completed" && n.IsRead == false && n.TargetedRole == "Admin").ToList();
+            var notifications = _dbContext.Notifications.Where(n => n.NotificationType == "Request Completed" && n.IsRead == false).ToList();
             if (notifications != null)
             { 
                 foreach (var notification in notifications) 
+                {
+                    notification.IsRead = true;
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ReadApprovedNotifications(string userId)
+        {
+            var notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.NotificationType == "Is Approved" && n.IsRead == false).ToList();
+            if (notifications != null)
+            {
+                foreach (var notification in notifications)
+                {
+                    notification.IsRead = true;
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ReadPendingNotifications(string userId)
+        {
+            var notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.NotificationType == "Is Pending" && n.IsRead == false).ToList();
+            if (notifications != null)
+            {
+                foreach (var notification in notifications)
                 {
                     notification.IsRead = true;
                 }
