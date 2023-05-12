@@ -63,7 +63,6 @@ namespace Vehicle_Management.Controllers
             _dbContext.SaveChanges();
 
             await _notification.SendNotificationToAdmins(currentUser.Id, getRequest.Id, "Request Completed");
-
             return RedirectToAction("ViewTask");
         }
     }

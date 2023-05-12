@@ -30,6 +30,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<NotificationHub>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 

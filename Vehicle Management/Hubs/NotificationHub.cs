@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Vehicle_Management.Controllers;
 using Vehicle_Management.Hubs;
+using Vehicle_Management.Services;
 
 namespace Vehicle_Management.Hubs
 {
@@ -12,13 +13,15 @@ namespace Vehicle_Management.Hubs
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly EmailService _emailService;
 
-        public NotificationHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger, IHubContext<NotificationHub> hubContext)
+        public NotificationHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger, IHubContext<NotificationHub> hubContext, EmailService emailService)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _logger = logger;
             _hubContext = hubContext;
+            _emailService = emailService;
         }
 
         public override async Task OnConnectedAsync()
@@ -41,6 +44,21 @@ namespace Vehicle_Management.Hubs
             _dbContext.Notifications.Add(notification);
             await _dbContext.SaveChangesAsync();
 
+            var receiverUser = _userManager.Users.FirstOrDefault(u => u.Id == receiverUserId);
+            if (receiverUser != null && receiverUser.Email!= null)
+            {
+                if (notificationType == "Is Approved")
+                {
+                    _emailService.SendEmail(receiverUser.Email, "Request Approved", "Your vehicle request has been approved.");
+                }
+                if (notificationType == "Is Pending")
+                {
+                    _emailService.SendEmail(receiverUser.Email, "Pending Request", "A new request is pending.");
+                }
+                notification.EmailSent = true;
+                await _dbContext.SaveChangesAsync();
+            }
+
             var senderUser = _dbContext.Users.FirstOrDefault(u => u.Id == senderUserId);
             // Send the notification to the specified user
             await _hubContext.Clients.User(receiverUserId).SendAsync("ReceiveNotification", senderUser.Name, notification.RequestId, notification.NotificationType);
@@ -62,6 +80,18 @@ namespace Vehicle_Management.Hubs
             await _dbContext.SaveChangesAsync();
 
             var senderUser = _dbContext.Users.FirstOrDefault(u => u.Id == senderUserId);
+            if (notificationType == "Needs Approval")
+            {
+                var emailBody = "A new request by " + senderUser.Name + " needs approval.";
+                await _emailService.SendEmailToAdmins("Request Completed", emailBody);
+            }
+            if (notificationType == "Request Completed")
+            {
+                var emailBody = senderUser.Name + " has completed a request.";
+                await _emailService.SendEmailToAdmins("Request Completed", emailBody);
+            }
+            notification.EmailSent = true;
+            await _dbContext.SaveChangesAsync();
             var admins = await _userManager.GetUsersInRoleAsync("Admin");
             if (admins != null)
             {

@@ -95,7 +95,9 @@ namespace Vehicle_Management.Controllers
             _dbContext.SaveChanges();
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser != null)
+			var requestByUser = _userManager.Users.FirstOrDefault(u=> u.Id == getRequest.UserId);
+            var assignedDriverUser = _userManager.Users.FirstOrDefault(u => u.Id == getRequest.DriverUserId);
+            if (currentUser != null && requestByUser != null && assignedDriverUser != null)
             {
                 await _notification.SendNotification(getRequest.UserId , currentUser.Id, getRequest.Id, "Is Approved" , "User");
                 await _notification.SendNotification(getRequest.DriverUserId, currentUser.Id, getRequest.Id, "Is Pending", "Driver");
@@ -139,7 +141,14 @@ namespace Vehicle_Management.Controllers
 			getRequest.IsUnapproved = true;
 			getRequest.IsCompleted = true;
 			getRequestStatus.RequestStatusName = "Unapproved";
-            _dbContext.SaveChanges();
+
+			var getNotification = _dbContext.Notifications.FirstOrDefault(n => n.RequestId == id && n.TargetedRole == "Admin");
+			if (getNotification != null)
+			{
+				getNotification.IsRead = true;
+			}
+
+			_dbContext.SaveChanges();
             return RedirectToAction("ViewRequests");
         }
 
