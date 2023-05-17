@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Vehicle_Management.Hubs;
 using Vehicle_Management.Models;
@@ -49,20 +50,27 @@ namespace Vehicle_Management.Controllers
 
         //Mark Task Complete
         [HttpGet]
-        public async Task<IActionResult> CompletedTask(int id)
+        public async Task<IActionResult> CompletedTask(int id, RequestHistory newRequestHistory)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
-            var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
+            var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).FirstOrDefault(r => r.Id == id);
             if (getRequest is null)
             {
                 return NotFound();
             }
             getRequest.IsCompleted = true;
-            getRequestStatus.RequestStatusName = "Approved and Completed";
+			getRequest.SetRequestStatus(_dbContext,"Completed");
             _dbContext.SaveChanges();
 
-            await _notification.SendNotificationToAdmins(currentUser.Id, getRequest.Id, "Request Completed");
+			newRequestHistory = new RequestHistory();
+			newRequestHistory.CreatedDate = DateTime.Now;
+			newRequestHistory.RequestId = getRequest.Id;
+			newRequestHistory.RequestStatusId = getRequest.RequestStatus.Id;
+			newRequestHistory.CreatedById = currentUser.Id;
+			_dbContext.Add(newRequestHistory);
+			_dbContext.SaveChanges();
+
+			await _notification.SendNotificationToAdmins(currentUser.Id, getRequest.Id, "RequestCompleted");
             return RedirectToAction("ViewTask");
         }
     }

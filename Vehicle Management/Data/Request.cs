@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,5 +28,23 @@ namespace Vehicle_Management.Data
         public string? DriverUserId { get; set; }
         public string? CreatedbyId { get; set; }
         public ApplicationUser? User { get; set; }
-    }
+
+
+		public bool HasStatus(string statusName)
+		{
+			return RequestStatus?.RequestStatusName.Equals(statusName, StringComparison.OrdinalIgnoreCase) ?? false;
+		}
+
+		public void SetRequestStatus(ApplicationDbContext dbContext, string requestStatusName)
+		{
+			var requestStatus = dbContext.RequestStatuses.AsEnumerable()
+								.FirstOrDefault(rs => rs.RequestStatusName.Equals(requestStatusName, StringComparison.OrdinalIgnoreCase));
+
+			if (requestStatus != null)
+			{
+				RequestStatus = requestStatus;
+				RequestStatusId = requestStatus.Id;
+			}
+		}
+	}
 }

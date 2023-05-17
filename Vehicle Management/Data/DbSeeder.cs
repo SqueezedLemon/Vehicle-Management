@@ -13,6 +13,36 @@ namespace Vehicle_Management.Data
             await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Driver.ToString()));
 
-        }
+			//Seed Request Types and Notification Types
+			var context = service.GetService<ApplicationDbContext>();
+
+			// For Request Types
+			if (!context.RequestStatuses.Any())
+			{
+				var requestStatuses = Enum.GetValues(typeof(Requests)).Cast<Requests>();
+				foreach (var requestStatus in requestStatuses)
+				{
+					context.RequestStatuses.Add(new RequestStatus
+					{
+						RequestStatusName = requestStatus.ToString()
+					});
+				}
+			}
+
+			// For Notification Types
+			if (!context.NotificationTypes.Any())
+			{
+				var notificationTypes = Enum.GetValues(typeof(Notifications)).Cast<Notifications>();
+				
+				foreach (var notificationType in notificationTypes)
+				{
+					context.NotificationTypes.Add(new NotificationType
+					{
+						Type = notificationType.ToString()
+					});
+				}
+				await context.SaveChangesAsync();
+			}
+		}
     }
 }

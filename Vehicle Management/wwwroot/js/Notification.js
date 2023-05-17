@@ -7,10 +7,10 @@ connection.on("ReceiveAdminNotification", (senderName, requestId, notificationTy
     var notificationContainer = document.getElementById("alertsDropdownBody");
     var newNotification = document.createElement("a");
     newNotification.classList.add("dropdown-item", "d-flex", "align-items-center");
-    if (notificationType == "Needs Approval") {
+    if (notificationType == "NeedsApproval") {
         newNotification.href = `/Home/ApproveRequest/${requestId}`;
     }
-    if (notificationType == "Request Completed") {
+    if (notificationType == "RequestCompleted") {
         newNotification.href = `/Home/ViewRequests`;
     }
 
@@ -33,7 +33,7 @@ connection.on("ReceiveAdminNotification", (senderName, requestId, notificationTy
     dateElement.classList.add("small", "text-gray-500");
     dateElement.appendChild(dateText);
     var senderNameText = document.createTextNode("Request by " + senderName + " needs approval");
-    if (notificationType == "Request Completed") {
+    if (notificationType == "RequestCompleted") {
         senderNameText = document.createTextNode(senderName + " has completed a request.");
     }
     var senderNameElement = document.createElement("span");
@@ -53,10 +53,10 @@ connection.on("ReceiveNotification", (senderName, requestId, notificationType,) 
     var notificationContainer = document.getElementById("alertsDropdownBody");
     var newNotification = document.createElement("a");
     newNotification.classList.add("dropdown-item", "d-flex", "align-items-center");
-    if (notificationType == "Is Approved") {
+    if (notificationType == "IsApproved") {
         newNotification.href = ``;
     }
-    if (notificationType == "Is Pending") {
+    if (notificationType == "IsPending") {
         newNotification.href = ``;
     }
 

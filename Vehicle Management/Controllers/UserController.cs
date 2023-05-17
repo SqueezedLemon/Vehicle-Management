@@ -4,6 +4,7 @@ using Vehicle_Management.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Vehicle_Management.Data;
 using Vehicle_Management.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vehicle_Management.Controllers
 {
@@ -45,17 +46,11 @@ namespace Vehicle_Management.Controllers
             }).ToList();
             model.Notifications = _notificationService.getUserNotification(currentUser.Id);
             return View(model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Home(BaseViewModel model, Request newRequest, RequestMessage newRequestMessage, RequestStatus newRequestStatus)
+		}
+		[HttpPost]
+        public async Task<IActionResult> Home(BaseViewModel model, Request newRequest, RequestMessage newRequestMessage, RequestHistory newRequestHistory)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-
-            newRequestStatus.CreatedById = currentUser.Id;
-            newRequestStatus.CreatedDate = DateTime.Now;
-            _dbContext.Add(newRequestStatus);
-            _dbContext.SaveChanges();
-            int newRequestStatusId = newRequestStatus.Id;
+			var currentUser = await _userManager.GetUserAsync(User);
 
             newRequest.PickupPoint = model.UserRequest.PickupPoint;
             newRequest.PickupPointLandmark = model.UserRequest.PickupPointLandmark;
@@ -65,21 +60,27 @@ namespace Vehicle_Management.Controllers
             newRequest.UserId = currentUser.Id;
             newRequest.CreatedbyId = currentUser.Id;
             newRequest.CreatedDate = DateTime.Now;
-            newRequest.RequestStatusId = newRequestStatusId;
-            _dbContext.Add(newRequest);
-            _dbContext.SaveChanges();
-            int newRequestId = newRequest.Id;
+			newRequest.SetRequestStatus(_dbContext, "Requested");
+			_dbContext.Add(newRequest);
+			_dbContext.SaveChanges();
+			int newRequestId = newRequest.Id;
 
             newRequestMessage.Message = model.UserRequest.Message;
             newRequestMessage.CreatedDate = DateTime.Now;
             newRequestMessage.RequestId = newRequestId;
             newRequestMessage.CreatedById = currentUser.Id;
             _dbContext.Add(newRequestMessage);
-            _dbContext.SaveChanges();
 
-            if (currentUser != null)
+            newRequestHistory.CreatedDate = DateTime.Now;
+            newRequestHistory.RequestId = newRequestId;
+            newRequestHistory.RequestStatusId = newRequest.RequestStatusId;
+            newRequestHistory.CreatedById = currentUser.Id;
+			_dbContext.Add(newRequestHistory);
+			_dbContext.SaveChanges();
+
+			if (currentUser != null)
             {
-               await _notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "Needs Approval");
+               await _notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "NeedsApproval");
             }
 
             return RedirectToAction("Home");

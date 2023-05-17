@@ -19,7 +19,7 @@ namespace Vehicle_Management.Data
         public DbSet<RequestHistory> RequestHistories { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<HubConnection> HubConnections { get; set; }
-
+        public DbSet<NotificationType> NotificationTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,17 +39,10 @@ namespace Vehicle_Management.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<RequestStatus>()
-                .HasOne(rs => rs.User)
-                .WithMany()
-                .HasForeignKey(rs => rs.CreatedById)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Request>()
                 .HasOne(r => r.RequestStatus)
-                .WithOne()
-                .HasForeignKey<Request>(r => r.RequestStatusId)
+                .WithMany()
+                .HasForeignKey(r => r.RequestStatusId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -132,15 +125,15 @@ namespace Vehicle_Management.Data
 
             modelBuilder.Entity<RequestHistory>()
                 .HasOne(r => r.Request)
-                .WithOne()
-                .HasForeignKey<RequestHistory>(r => r.RequestId)
+                .WithMany()
+                .HasForeignKey(r => r.RequestId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RequestHistory>()
                 .HasOne(r => r.RequestStatus)
-                .WithOne()
-                .HasForeignKey<RequestHistory>(r => r.RequestStatusId)
+                .WithMany()
+                .HasForeignKey(r => r.RequestStatusId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -163,6 +156,13 @@ namespace Vehicle_Management.Data
                 .HasForeignKey(r => r.RequestId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-        }
+
+			modelBuilder.Entity<Notification>()
+				.HasOne(r => r.NotificationType)
+				.WithMany()
+				.HasForeignKey(r => r.NotificationTypeId)
+				.IsRequired()
+				.OnDelete(DeleteBehavior.Restrict);
+		}
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vehicle_Management.Data;
 
@@ -11,9 +12,11 @@ using Vehicle_Management.Data;
 namespace Vehicle_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230514072220_NotificationTypes")]
+    partial class NotificationTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,14 +344,14 @@ namespace Vehicle_Management.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NotificationTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("NotificationType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("TargetedRole")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
@@ -357,11 +360,7 @@ namespace Vehicle_Management.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("NotificationTypeId");
-
                     b.HasIndex("RequestId");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Notifications");
                 });
@@ -437,7 +436,8 @@ namespace Vehicle_Management.Migrations
 
                     b.HasIndex("CreatedbyId");
 
-                    b.HasIndex("RequestStatusId");
+                    b.HasIndex("RequestStatusId")
+                        .IsUnique();
 
                     b.ToTable("Request");
                 });
@@ -467,9 +467,11 @@ namespace Vehicle_Management.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("RequestId");
+                    b.HasIndex("RequestId")
+                        .IsUnique();
 
-                    b.HasIndex("RequestStatusId");
+                    b.HasIndex("RequestStatusId")
+                        .IsUnique();
 
                     b.ToTable("RequestHistory");
                 });
@@ -513,10 +515,19 @@ namespace Vehicle_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("RequestStatusName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("RequestStatus");
                 });
@@ -696,27 +707,13 @@ namespace Vehicle_Management.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Vehicle_Management.Data.NotificationType", "NotificationType")
-                        .WithMany()
-                        .HasForeignKey("NotificationTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Vehicle_Management.Data.Request", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("NotificationType");
-
                     b.Navigation("Request");
-
-                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -730,8 +727,8 @@ namespace Vehicle_Management.Migrations
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.RequestStatus", "RequestStatus")
-                        .WithMany()
-                        .HasForeignKey("RequestStatusId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.Request", "RequestStatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -749,14 +746,14 @@ namespace Vehicle_Management.Migrations
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.RequestHistory", "RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.RequestStatus", "RequestStatus")
-                        .WithMany()
-                        .HasForeignKey("RequestStatusId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.RequestHistory", "RequestStatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -782,6 +779,17 @@ namespace Vehicle_Management.Migrations
                         .IsRequired();
 
                     b.Navigation("Request");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vehicle_Management.Data.RequestStatus", b =>
+                {
+                    b.HasOne("Vehicle_Management.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

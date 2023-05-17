@@ -78,29 +78,36 @@ namespace Vehicle_Management.Controllers
 		//Approve Request
 
 		[HttpPost]
-		public async Task<IActionResult> ApproveRequest(int id, BaseViewModel model)
+		public async Task<IActionResult> ApproveRequest(int id, BaseViewModel model, RequestHistory newRequestHistory)
 		{
-			var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
-            var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
+			var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).FirstOrDefault(r => r.Id == id);
+			var currentUser = await _userManager.GetUserAsync(User);
+
 			getRequest.DriverUserId = model.UserRequest.DriverUserId;
             getRequest.IsApproved = true;
-			getRequestStatus.RequestStatusName = "Approved but Not Completed";
+			getRequest.SetRequestStatus(_dbContext, "Approved");
 
-			var getNotification = _dbContext.Notifications.FirstOrDefault(n => n.RequestId == id && n.TargetedRole == "Admin");
+			var getNotification = _dbContext.Notifications.AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.HasTargatedRole("Admin"));
 			if (getNotification != null)
 			{
                 getNotification.IsRead = true;
             }
+			_dbContext.SaveChanges();
 
-            _dbContext.SaveChanges();
+			newRequestHistory = new RequestHistory();
+			newRequestHistory.CreatedDate = DateTime.Now;
+			newRequestHistory.RequestId = getRequest.Id;
+			newRequestHistory.RequestStatusId = getRequest.RequestStatus.Id;
+			newRequestHistory.CreatedById = currentUser.Id;
+			_dbContext.Add(newRequestHistory);
+			_dbContext.SaveChanges();
 
-            var currentUser = await _userManager.GetUserAsync(User);
 			var requestByUser = _userManager.Users.FirstOrDefault(u=> u.Id == getRequest.UserId);
             var assignedDriverUser = _userManager.Users.FirstOrDefault(u => u.Id == getRequest.DriverUserId);
             if (currentUser != null && requestByUser != null && assignedDriverUser != null)
             {
-                await _notification.SendNotification(getRequest.UserId , currentUser.Id, getRequest.Id, "Is Approved" , "User");
-                await _notification.SendNotification(getRequest.DriverUserId, currentUser.Id, getRequest.Id, "Is Pending", "Driver");
+                await _notification.SendNotification(getRequest.UserId , currentUser.Id, getRequest.Id, "IsApproved" , "User");
+                await _notification.SendNotification(getRequest.DriverUserId, currentUser.Id, getRequest.Id, "IsPending", "Driver");
             }
 			return RedirectToAction("ViewRequests");
 		}
@@ -130,25 +137,32 @@ namespace Vehicle_Management.Controllers
 
         //Unapprove Request
         [HttpGet]
-        public IActionResult UnapproveRequest(int id)
+        public async Task<IActionResult> UnapproveRequest(int id, RequestHistory newRequestHistory)
         {
-            var getRequest = _dbContext.Requests.FirstOrDefault(r => r.Id == id);
-            var getRequestStatus = _dbContext.RequestStatuses.FirstOrDefault(rs => rs.Id == getRequest.RequestStatusId);
-            if (getRequest is null)
+            var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).FirstOrDefault(r => r.Id == id);
+			var currentUser = await _userManager.GetUserAsync(User);
+			if (getRequest is null)
             {
                 return NotFound();
             }
 			getRequest.IsUnapproved = true;
 			getRequest.IsCompleted = true;
-			getRequestStatus.RequestStatusName = "Unapproved";
-
-			var getNotification = _dbContext.Notifications.FirstOrDefault(n => n.RequestId == id && n.TargetedRole == "Admin");
+			getRequest.SetRequestStatus(_dbContext, "Unapproved");
+			
+			var getNotification = _dbContext.Notifications.AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.HasTargatedRole("Admin"));
 			if (getNotification != null)
 			{
 				getNotification.IsRead = true;
 			}
 
+			newRequestHistory = new RequestHistory();
+			newRequestHistory.CreatedDate = DateTime.Now;
+			newRequestHistory.RequestId = getRequest.Id;
+			newRequestHistory.RequestStatusId = getRequest.RequestStatus.Id;
+			newRequestHistory.CreatedById = currentUser.Id;
 			_dbContext.SaveChanges();
+			_dbContext.Add(newRequestHistory);
+			
             return RedirectToAction("ViewRequests");
         }
 

@@ -1,4 +1,5 @@
-﻿using Vehicle_Management.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Vehicle_Management.Models;
 
 namespace Vehicle_Management.Services
 {
@@ -15,10 +16,10 @@ namespace Vehicle_Management.Services
 
         public List<NotificationView> getUserNotification(string userId)
         {
-            var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
+            var Notifications = _dbContext.Notifications.Include(n => n.NotificationType).Where(n => n.UserId == userId && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
             {
                 Id = n.Id,
-                NotificationType = n.NotificationType,
+                NotificationType = n.NotificationType.Type,
                 CreatedById = n.CreatedById,
                 RequestId = n.RequestId,
                 Date = n.Date
@@ -28,14 +29,20 @@ namespace Vehicle_Management.Services
 
         public List<NotificationView> getAdminNotification()
         {
-            var Notifications = _dbContext.Notifications.Where(n => n.TargetedRole == "Admin" && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
-            {
-                Id = n.Id,
-                NotificationType = n.NotificationType,
-                CreatedById = n.CreatedById,
-                RequestId = n.RequestId,
-                Date = n.Date
-            }).ToList();
+			var Notifications = _dbContext.Notifications
+				.Include(n => n.NotificationType)
+				.Include(n => n.Role)
+				.AsEnumerable()
+				.Where(n => n.IsRead == false && n.HasTargatedRole("Admin"))
+	            .OrderByDescending(n => n.Date)
+	            .Select(n => new NotificationView
+	            {
+		            Id = n.Id,
+                    NotificationType = n.NotificationType.Type,
+                    CreatedById = n.CreatedById,
+                    RequestId = n.RequestId,
+                    Date = n.Date
+                }).ToList();
             return Notifications;
         }
 
@@ -44,7 +51,7 @@ namespace Vehicle_Management.Services
             var Notifications = _dbContext.Notifications.Where(n => n.UserId == userId && n.IsRead == false).OrderByDescending(n => n.Date).Select(n => new NotificationView
             {
                 Id = n.Id,
-                NotificationType = n.NotificationType,
+                NotificationType = n.NotificationType.Type,
                 CreatedById = n.CreatedById,
                 RequestId = n.RequestId,
                 Date = n.Date

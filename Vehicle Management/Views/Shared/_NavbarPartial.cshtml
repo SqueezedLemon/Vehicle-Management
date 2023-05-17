@@ -111,7 +111,7 @@
                     {
                         @if(User.IsInRole("Admin"))
                         {
-                            @if (notification.NotificationType == "Needs Approval")
+                            @if (notification.NotificationType == "NeedsApproval")
                             {
                                 <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@notification.RequestId">
                                     <div class="mr-3">
@@ -128,7 +128,7 @@
                                     </div>
                                 </a>
                             }
-                            @if (notification.NotificationType == "Request Completed")
+                            @if (notification.NotificationType == "RequestCompleted")
                             {
                                 <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
                                     <div class="mr-3">
@@ -149,7 +149,7 @@
 
                         @if (User.IsInRole("User"))
                         {
-                            @if (notification.NotificationType == "Is Approved")
+                            @if (notification.NotificationType == "IsApproved")
                             {
                                 <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
                                     <div class="mr-3">
@@ -169,7 +169,7 @@
                         }
                         @if (User.IsInRole("Driver"))
                         {
-                            @if (notification.NotificationType == "Is Pending")
+                            @if (notification.NotificationType == "IsPending")
                             {
                                 <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
                                     <div class="mr-3">

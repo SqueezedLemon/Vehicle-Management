@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vehicle_Management.Data;
 
@@ -11,9 +12,11 @@ using Vehicle_Management.Data;
 namespace Vehicle_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230515061714_NotificationTypeForeignKey")]
+    partial class NotificationTypeForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -437,7 +440,8 @@ namespace Vehicle_Management.Migrations
 
                     b.HasIndex("CreatedbyId");
 
-                    b.HasIndex("RequestStatusId");
+                    b.HasIndex("RequestStatusId")
+                        .IsUnique();
 
                     b.ToTable("Request");
                 });
@@ -467,9 +471,11 @@ namespace Vehicle_Management.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("RequestId");
+                    b.HasIndex("RequestId")
+                        .IsUnique();
 
-                    b.HasIndex("RequestStatusId");
+                    b.HasIndex("RequestStatusId")
+                        .IsUnique();
 
                     b.ToTable("RequestHistory");
                 });
@@ -730,8 +736,8 @@ namespace Vehicle_Management.Migrations
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.RequestStatus", "RequestStatus")
-                        .WithMany()
-                        .HasForeignKey("RequestStatusId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.Request", "RequestStatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -749,14 +755,14 @@ namespace Vehicle_Management.Migrations
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.RequestHistory", "RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Vehicle_Management.Data.RequestStatus", "RequestStatus")
-                        .WithMany()
-                        .HasForeignKey("RequestStatusId")
+                        .WithOne()
+                        .HasForeignKey("Vehicle_Management.Data.RequestHistory", "RequestStatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

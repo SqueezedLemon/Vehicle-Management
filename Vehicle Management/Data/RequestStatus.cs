@@ -9,10 +9,5 @@ namespace Vehicle_Management.Data
     {
         public int Id { get; set; }
         public string? RequestStatusName { get; set; }
-        public DateTime CreatedDate { get; set; }
-
-        public string? CreatedById  { get; set; }
-        public ApplicationUser? User { get; set; }
-
     }
 }
