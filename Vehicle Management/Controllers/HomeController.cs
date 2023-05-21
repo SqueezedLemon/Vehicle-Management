@@ -10,13 +10,13 @@ namespace Vehicle_Management.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<UserManager> _userManager;
         private readonly ILogger<HomeController> _logger;
 		private readonly ApplicationDbContext _dbContext;
 		private readonly NotificationHub _notification;
 		private readonly NotificationService _notificationService;
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationService notificationService, NotificationHub notification)
+		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<UserManager> userManager, NotificationService notificationService, NotificationHub notification)
 		{
 			_userManager = userManager;
 			_logger = logger;
@@ -25,7 +25,7 @@ namespace Vehicle_Management.Controllers
 			_notificationService = notificationService;
 		}
 
-		public IActionResult Index(BaseViewModel model)
+		public async Task<IActionResult> Index(BaseViewModel model, TotalData totalData)
 		{
 
 			if (User.IsInRole("User"))
@@ -38,6 +38,8 @@ namespace Vehicle_Management.Controllers
 			}
 
 			model.Notifications = _notificationService.getAdminNotification();
+			await totalData.SetData(_dbContext, _userManager);
+            model.TotalData = totalData;
             return View(model);
         }
 
@@ -87,7 +89,7 @@ namespace Vehicle_Management.Controllers
             getRequest.IsApproved = true;
 			getRequest.SetRequestStatus(_dbContext, "Approved");
 
-			var getNotification = _dbContext.Notifications.AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.HasTargatedRole("Admin"));
+			var getNotification = _dbContext.Notifications.Include(n => n.NotificationType).AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.IsOfType("NeedsApproval"));
 			if (getNotification != null)
 			{
                 getNotification.IsRead = true;
@@ -149,7 +151,7 @@ namespace Vehicle_Management.Controllers
 			getRequest.IsCompleted = true;
 			getRequest.SetRequestStatus(_dbContext, "Unapproved");
 			
-			var getNotification = _dbContext.Notifications.AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.HasTargatedRole("Admin"));
+			var getNotification = _dbContext.Notifications.Include(n => n.NotificationType).AsEnumerable().FirstOrDefault(n => n.RequestId == id && n.IsOfType("NeedsApproval"));
 			if (getNotification != null)
 			{
 				getNotification.IsRead = true;

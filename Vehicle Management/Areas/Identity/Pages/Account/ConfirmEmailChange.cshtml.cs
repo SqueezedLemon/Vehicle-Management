@@ -16,10 +16,10 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailChangeModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<UserManager> _userManager;
+        private readonly SignInManager<UserManager> _signInManager;
 
-        public ConfirmEmailChangeModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public ConfirmEmailChangeModel(UserManager<UserManager> userManager, SignInManager<UserManager> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

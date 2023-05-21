@@ -15,13 +15,13 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<UserManager> _userManager;
+        private readonly SignInManager<UserManager> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
 
         public DeletePersonalDataModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<UserManager> userManager,
+            SignInManager<UserManager> signInManager,
             ILogger<DeletePersonalDataModel> logger)
         {
             _userManager = userManager;

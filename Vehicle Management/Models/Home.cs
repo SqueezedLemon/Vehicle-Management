@@ -22,6 +22,6 @@ namespace Vehicle_Management.Models
 		public bool IsAvailable { get; set; }
         public DateTime CreatedDate { get; set; }
         public String? CreatedById { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UserManager? User { get; set; }
     }
 }

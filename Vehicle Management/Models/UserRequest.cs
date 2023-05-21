@@ -21,6 +21,6 @@
         public string? UserId { get; set; }
         public string? DriverUserId { get; set; }
         public string? CreatedbyId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UserManager? User { get; set; }
     }
 }

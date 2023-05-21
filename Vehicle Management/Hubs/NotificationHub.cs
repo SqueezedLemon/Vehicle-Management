@@ -10,13 +10,13 @@ namespace Vehicle_Management.Hubs
     public class NotificationHub : Hub
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<UserManager> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly EmailService _emailService;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-		public NotificationHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger, IHubContext<NotificationHub> hubContext, EmailService emailService, RoleManager<IdentityRole> roleManager)
+		public NotificationHub(ApplicationDbContext dbContext, UserManager<UserManager> userManager, ILogger<HomeController> logger, IHubContext<NotificationHub> hubContext, EmailService emailService, RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;

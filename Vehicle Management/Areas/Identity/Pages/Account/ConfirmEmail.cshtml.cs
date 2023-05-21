@@ -17,9 +17,9 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<UserManager> _userManager;
 
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+        public ConfirmEmailModel(UserManager<UserManager> userManager)
         {
             _userManager = userManager;
         }

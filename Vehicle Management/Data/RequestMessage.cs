@@ -15,6 +15,6 @@ namespace Vehicle_Management.Data
         public Request? Request { get; set; }
 
         public string? CreatedById { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UserManager? User { get; set; }
     }
 }

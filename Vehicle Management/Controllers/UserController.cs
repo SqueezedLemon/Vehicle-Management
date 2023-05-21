@@ -10,13 +10,13 @@ namespace Vehicle_Management.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<UserManager> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly NotificationHub _notification;
         private readonly NotificationService _notificationService;
 
-        public UserController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, NotificationHub notification, NotificationService notificationService)
+        public UserController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<UserManager> userManager, NotificationHub notification, NotificationService notificationService)
         {
             _userManager = userManager;
             _logger = logger;

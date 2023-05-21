@@ -16,13 +16,13 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<UserManager> _userManager;
+        private readonly SignInManager<UserManager> _signInManager;
         private readonly IFileService _fileService;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<UserManager> userManager,
+            SignInManager<UserManager> signInManager,
             IFileService fileService)    
         {
             _userManager = userManager;
@@ -68,7 +68,7 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account.Manage
             public IFormFile ImageFile { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private async Task LoadAsync(UserManager user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);

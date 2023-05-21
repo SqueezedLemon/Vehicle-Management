@@ -13,6 +13,6 @@ namespace Vehicle_Management.Data
 
         public string? UserID { get; set; }
         public string? CreatedById { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UserManager? User { get; set; }
     }
 }

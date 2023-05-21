@@ -10,11 +10,11 @@ namespace Vehicle_Management.Services
     public class EmailService
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<UserManager> _userManager;
         private readonly IConfiguration _configuration;
         private static string[] Scopes = { GmailService.Scope.GmailSend };
         private static string ApplicationName = "Vehicle Management";
-        public EmailService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public EmailService(ApplicationDbContext dbContext, UserManager<UserManager> userManager, IConfiguration configuration)
         {
             _dbContext = dbContext;
             _userManager = userManager;

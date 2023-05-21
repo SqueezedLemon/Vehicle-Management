@@ -1,4 +1,8 @@
-﻿.hero-wrap {
+﻿.HomeColor {
+    background-color: #e41c24 !important;
+}
+
+.hero-wrap {
     width: 100%;
     height: 750px;
     position: inherit;

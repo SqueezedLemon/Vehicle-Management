@@ -6,9 +6,9 @@ namespace Vehicle_Management.Services
     public class NotificationService
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<UserManager> _userManager;
 
-        public NotificationService (ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+        public NotificationService (ApplicationDbContext dbContext, UserManager<UserManager> userManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;

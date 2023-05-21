@@ -20,9 +20,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
+builder.Services.AddIdentity<UserManager,IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddUserManager<UserManager<ApplicationUser>>()
+    .AddUserManager<UserManager<UserManager>>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IFileService, FileService>();

@@ -17,13 +17,13 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<UserManager> _signInManager;
+        private readonly UserManager<UserManager> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
 
         public LoginWith2faModel(
-            SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager,
+            SignInManager<UserManager> signInManager,
+            UserManager<UserManager> userManager,
             ILogger<LoginWith2faModel> logger)
         {
             _signInManager = signInManager;

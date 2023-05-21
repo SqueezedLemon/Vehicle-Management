@@ -24,6 +24,6 @@ namespace Vehicle_Management.Data
         public DateTime CreatedDate { get; set; }
 
         public string? CreatedById { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UserManager? User { get; set; }
     }
 }
