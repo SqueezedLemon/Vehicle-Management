@@ -31,52 +31,54 @@
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
-
+  
 <body class="bg-danger">
-
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card o-hidden border-0 shadow-lg my-5">
+                        <div class="card-body p-0">
+                            <!-- Nested Row within Card Body -->
+                            <div class="row">
+                                <div class="col-lg">
+                                    <div class="p-5">
+                                        <div class="text-center">
+                                            <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                                        </div>
+                                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                            <div class="form-group row">
+                                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                                    <input type="text" asp-for="Input.Name" class="form-control form-control-user"
+                                                           placeholder="Full Name">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <select asp-for="Input.Role" class="form-control form-control-user">
+                                                        <option value="User">Normal User</option>
+                                                        <option value="Admin">Admin User</option>
+                                                        <option value="Driver">Driver User</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" asp-for="Input.Email" class="form-control form-control-user"
+                                                       placeholder="Email Address">
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                                    <input type="password" asp-for="Input.Password" class="form-control form-control-user"
+                                                           placeholder="Password">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="password" asp-for="Input.ConfirmPassword" class="form-control form-control-user"
+                                                           placeholder="Repeat Password">
+                                                </div>
+                                            </div>
+                                            <button id="registerSubmit" type="submit" class="btn btn-primary btn-user btn-block">Register</button>
+                                            <hr>
+                                        </form>
                                     </div>
-                                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="text" asp-for="Input.Name" class="form-control form-control-user"
-                                                       placeholder="Full Name">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <select asp-for="Input.Role" class="form-control form-control-user">
-                                                    <option value="User">Normal User</option>
-                                                    <option value="Admin">Admin User</option>
-                                                    <option value="Driver">Driver User</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" asp-for="Input.Email" class="form-control form-control-user"
-                                                   placeholder="Email Address">
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="password" asp-for="Input.Password" class="form-control form-control-user"
-                                                       placeholder="Password">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="password" asp-for="Input.ConfirmPassword" class="form-control form-control-user"
-                                                       placeholder="Repeat Password">
-                                            </div>
-                                        </div>
-                                        <button id="registerSubmit" type="submit" class="btn btn-primary btn-user btn-block">Register</button>
-                                        <hr>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -84,18 +86,23 @@
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <h1 class="text-primary">Access Denied</h1>
+    }
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="~/vendor/jquery/jquery.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="~/js/sb-admin-2.min.js"></script>
 
 </body>
 
 </html>
+
+<!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="~/js/sb-admin-2.min.js"></script>

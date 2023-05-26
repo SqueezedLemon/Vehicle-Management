@@ -251,21 +251,23 @@ namespace Vehicle_Management.Controllers
 		public IActionResult EditVehicle(BaseViewModel model, int id)
 		{
 			var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
-            model.Vehicle = new VehicleView();
-            model.Vehicle.Id = getVehicle.Id;
-			model.Vehicle.RegistrationNumber = getVehicle.RegistrationNumber;
-			model.Vehicle.ManufactureCompany = getVehicle.ManufactureCompany;
-			model.Vehicle.VehicleModel = getVehicle.VehicleModel;
-			model.Vehicle.EngineCapacity = getVehicle.EngineCapacity;
-			model.Vehicle.ManufacturedYear = getVehicle.ManufacturedYear;
-			model.Vehicle.PurchasedOn = getVehicle.PurchasedOn;
-			model.Vehicle.Color = getVehicle.Color;
-			model.Vehicle.EngineNumber = getVehicle.EngineNumber;
-			model.Vehicle.ChasisNumber = getVehicle.ChasisNumber;
-			model.Vehicle.PassengerCapacity = getVehicle.PassengerCapacity;
-			model.Vehicle.Fuel = getVehicle.Fuel;
-			model.Vehicle.IsAvailable = getVehicle.IsAvailable;
-
+			if (getVehicle != null)
+			{
+				model.Vehicle = new VehicleView();
+				model.Vehicle.Id = getVehicle.Id;
+				model.Vehicle.RegistrationNumber = getVehicle.RegistrationNumber;
+				model.Vehicle.ManufactureCompany = getVehicle.ManufactureCompany;
+				model.Vehicle.VehicleModel = getVehicle.VehicleModel;
+				model.Vehicle.EngineCapacity = getVehicle.EngineCapacity;
+				model.Vehicle.ManufacturedYear = getVehicle.ManufacturedYear;
+				model.Vehicle.PurchasedOn = getVehicle.PurchasedOn;
+				model.Vehicle.Color = getVehicle.Color;
+				model.Vehicle.EngineNumber = getVehicle.EngineNumber;
+				model.Vehicle.ChasisNumber = getVehicle.ChasisNumber;
+				model.Vehicle.PassengerCapacity = getVehicle.PassengerCapacity;
+				model.Vehicle.Fuel = getVehicle.Fuel;
+				model.Vehicle.IsAvailable = getVehicle.IsAvailable;
+			}
             model.Notifications = _notificationService.getAdminNotification();
             return View(model);
 		}

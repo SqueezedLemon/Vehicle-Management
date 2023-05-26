@@ -5,118 +5,130 @@
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<div class="hero-wrap ftco-degree-bg" style="background-image: url('/img/bg_1.jpg');" data-stellar-background-ratio="0.5">
-    <div class="overlay"></div>
-    <div class="container">
-        <div class="row no-gutters slider-text justify-content-start align-items-center justify-content-center">
-            <div class="col-lg-8">
-                <div class="text w-100 text-center mb-md-5 pb-md-5">
-                    <h1 class="mb-4">Welcome @user.Name</h1>
-                    <p style="font-size: 18px;">Request Vehicles Easily</p>
+@if (User.IsInRole("User"))
+{
+    <div class="hero-wrap ftco-degree-bg" style="background-image: url('/img/bg_1.jpg');" data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row no-gutters slider-text justify-content-start align-items-center justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text w-100 text-center mb-md-5 pb-md-5">
+                        <h1 class="mb-4">Welcome @user.Name</h1>
+                        <p style="font-size: 18px;">Request Vehicles Easily</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<section class="ftco-section ftco-no-pt bg-light">
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="col-md-12	featured-top">
-                <div class="row no-gutters">
-                    <div class="col-md-4 d-flex align-items-center">
-                        <form class="request-form bg-primary" asp-controller="User" asp-action="Home" method="post">
-                            <h2>Make your trip</h2>
-                            <div class="form-group">
-                                <label asp-for="UserRequest.PickupPoint" class="label">Pick-up location</label>
-                                <input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="UserRequest.DropPoint" class="label">Drop-off location</label>
-                                <input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
-                            </div>
-                            <div class="d-flex">
-                                <div class="form-group mr-2">
-                                    <label asp-for="UserRequest.PickupPointLandmark" class="label">Pick-up Landmark</label>
-                                    <input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc" required>
+    <section class="ftco-section ftco-no-pt bg-light">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-md-12	featured-top">
+                    <div class="row no-gutters">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <form class="request-form bg-primary" asp-controller="User" asp-action="Home" method="post">
+                                <h2>Make your trip</h2>
+                                <div class="form-group">
+                                    <label asp-for="UserRequest.PickupPoint" class="label">Pick-up location</label>
+                                    <input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
                                 </div>
-                                <div class="form-group ml-2">
-                                    <label asp-for="UserRequest.DropPointLandmark" class="label">Drop-off Landmark</label>
-                                    <input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc" required>
+                                <div class="form-group">
+                                    <label asp-for="UserRequest.DropPoint" class="label">Drop-off location</label>
+                                    <input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="UserRequest.RequestedDate" class="label">Pick-up Date</label>
-                                <input asp-for="UserRequest.RequestedDate" type="date" class="form-control" id="time_pick" placeholder="Date" required>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="UserRequest.Message" class="label">Message</label>
-                                <textarea asp-for="UserRequest.Message" class="form-control" id="message" rows="2" cols="30" placeholder="Your Message"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-secondary py-3 px-4">Request A Vehicle Now</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-8 d-flex align-items-center">
-                        <div class="services-wrap rounded-right w-100">
-                            <h3 class="heading-section mb-4">Request Vehicles</h3>
-                            <div class="row d-flex mb-4">
-                                <div class="col-md-4 d-flex align-self-stretch ">
-                                    <div class="services w-100 text-center">
-                                        <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-geo-alt-fill"></span></div>
-                                        <div class="text w-100">
-                                            <h3 class="heading mb-2">Choose Your Pickup Location</h3>
+                                <div class="d-flex">
+                                    <div class="form-group mr-2">
+                                        <label asp-for="UserRequest.PickupPointLandmark" class="label">Pick-up Landmark</label>
+                                        <input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc" required>
+                                    </div>
+                                    <div class="form-group ml-2">
+                                        <label asp-for="UserRequest.DropPointLandmark" class="label">Drop-off Landmark</label>
+                                        <input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserRequest.RequestedDate" class="label">Pick-up Date</label>
+                                    <input asp-for="UserRequest.RequestedDate" type="date" class="form-control" id="time_pick" placeholder="Date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserRequest.Message" class="label">Message</label>
+                                    <textarea asp-for="UserRequest.Message" class="form-control" id="message" rows="2" cols="30" placeholder="Your Message"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-secondary py-3 px-4">Request A Vehicle Now</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="services-wrap rounded-right w-100">
+                                <h3 class="heading-section mb-4">Request Vehicles</h3>
+                                <div class="row d-flex mb-4">
+                                    <div class="col-md-4 d-flex align-self-stretch ">
+                                        <div class="services w-100 text-center">
+                                            <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-geo-alt-fill"></span></div>
+                                            <div class="text w-100">
+                                                <h3 class="heading mb-2">Choose Your Pickup Location</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-self-stretch ">
+                                        <div class="services w-100 text-center">
+                                            <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-car-front-fill"></span></div>
+                                            <div class="text w-100">
+                                                <h3 class="heading mb-2">Request Vehicles</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-self-stretch ">
+                                        <div class="services w-100 text-center">
+                                            <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-shield-fill-check"></span></div>
+                                            <div class="text w-100">
+                                                <h3 class="heading mb-2">Wait for Admin Approval</h3>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 d-flex align-self-stretch ">
-                                    <div class="services w-100 text-center">
-                                        <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-car-front-fill"></span></div>
-                                        <div class="text w-100">
-                                            <h3 class="heading mb-2">Request Vehicles</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 d-flex align-self-stretch ">
-                                    <div class="services w-100 text-center">
-                                        <div class="icon d-flex align-items-center justify-content-center"><span class="bi bi-shield-fill-check"></span></div>
-                                        <div class="text w-100">
-                                            <h3 class="heading mb-2">Wait for Admin Approval</h3>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p><a href="#" class="btn btn-primary py-3 px-4">Request Vehicle</a></p>
                             </div>
-                            <p><a href="#" class="btn btn-primary py-3 px-4">Request Vehicle</a></p>
                         </div>
                     </div>
-                </div>
-                <div class="row no-gutters pt-1">
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <div class="row">
-                                <div class="col">
-                                    <h4 class="m-0 font-weight-bold text-primary">Requests</h4>
+                    <div class="row no-gutters pt-1">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4 class="m-0 font-weight-bold text-primary">Requests</h4>
+                                    </div>
                                 </div>
+                                <ul class="nav nav-tabs nav-sm-justified" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="true"><h6 class="m-0 font-weight-bold text-primary">Pending</h6></button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved" aria-selected="false"><h6 class="m-0 font-weight-bold text-primary">Approved</h6></button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false"><h6 class="m-0 font-weight-bold text-primary">Completed</h6></button>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul class="nav nav-tabs nav-sm-justified" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="true"><h6 class="m-0 font-weight-bold text-primary">Pending</h6></button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved" aria-selected="false"><h6 class="m-0 font-weight-bold text-primary">Approved</h6></button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false"><h6 class="m-0 font-weight-bold text-primary">Completed</h6></button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Requested For</th>
+                                                        <th class="text-center">Pickup Location</th>
+                                                        <th class="text-center">Pickup Landmark</th>
+                                                        <th class="text-center">Drop Off Location</th>
+                                                        <th class="text-center">Drop Off Landmark</th>
+                                                        <th class="text-center">Requested On</th>
+                                                        <th class="text-center">Requested By</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
                                                     <th class="text-center">Requested For</th>
                                                     <th class="text-center">Pickup Location</th>
                                                     <th class="text-center">Pickup Landmark</th>
@@ -124,95 +136,96 @@
                                                     <th class="text-center">Drop Off Landmark</th>
                                                     <th class="text-center">Requested On</th>
                                                     <th class="text-center">Requested By</th>
-                                                </tr>
-                                            </thead>
-                                            <tfoot>
-                                                <th class="text-center">Requested For</th>
-                                                <th class="text-center">Pickup Location</th>
-                                                <th class="text-center">Pickup Landmark</th>
-                                                <th class="text-center">Drop Off Location</th>
-                                                <th class="text-center">Drop Off Landmark</th>
-                                                <th class="text-center">Requested On</th>
-                                                <th class="text-center">Requested By</th>
-                                            </tfoot>
-                                            <tbody>
-                                                @if (Model.UserRequests != null)
-                                                {
-                                                    @foreach (var request in Model.UserRequests)
-                                                    {
-                                                        @if (!request.IsApproved && !request.IsCompleted)
-                                                        {
-                                                            <tr>
-                                                                <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@request.PickupPoint</td>
-                                                                <td class="text-center">@request.PickupPointLandmark</td>
-                                                                <td class="text-center">@request.DropPoint</td>
-                                                                <td class="text-center">@request.DropPointLandmark</td>
-                                                                <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@user.Name</td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">Requested For</th>
-                                                    <th class="text-center">Pickup Location</th>
-                                                    <th class="text-center">Pickup Landmark</th>
-                                                    <th class="text-center">Drop Off Location</th>
-                                                    <th class="text-center">Drop Off Landmark</th>
-                                                    <th class="text-center">Requested On</th>
-                                                    <th class="text-center">Requested By</th>
-                                                </tr>
-                                            </thead>
-                                            <tfoot>
-                                                <th class="text-center">Requested For</th>
-                                                <th class="text-center">Pickup Location</th>
-                                                <th class="text-center">Pickup Landmark</th>
-                                                <th class="text-center">Drop Off Location</th>
-                                                <th class="text-center">Drop Off Landmark</th>
-                                                <th class="text-center">Requested On</th>
-                                                <th class="text-center">Requested By</th>
                                                 </tfoot>
-                                            <tbody>
-                                                @if (Model.UserRequests != null)
-                                                {
-                                                    @foreach (var request in Model.UserRequests)
+                                                <tbody>
+                                                    @if (Model.UserRequests != null)
                                                     {
-                                                        @if (request.IsApproved && !request.IsCompleted)
+                                                        @foreach (var request in Model.UserRequests)
                                                         {
-                                                            <tr>
-                                                                <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@request.PickupPoint</td>
-                                                                <td class="text-center">@request.PickupPointLandmark</td>
-                                                                <td class="text-center">@request.DropPoint</td>
-                                                                <td class="text-center">@request.DropPointLandmark</td>
-                                                                <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@user.Name</td>
-                                                            </tr>
+                                                            @if (!request.IsApproved && !request.IsCompleted)
+                                                            {
+                                                                <tr>
+                                                                    <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@request.PickupPoint</td>
+                                                                    <td class="text-center">@request.PickupPointLandmark</td>
+                                                                    <td class="text-center">@request.DropPoint</td>
+                                                                    <td class="text-center">@request.DropPointLandmark</td>
+                                                                    <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@user.Name</td>
+                                                                </tr>
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
+                                <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Requested For</th>
+                                                        <th class="text-center">Pickup Location</th>
+                                                        <th class="text-center">Pickup Landmark</th>
+                                                        <th class="text-center">Drop Off Location</th>
+                                                        <th class="text-center">Drop Off Landmark</th>
+                                                        <th class="text-center">Requested On</th>
+                                                        <th class="text-center">Requested By</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <th class="text-center">Requested For</th>
+                                                    <th class="text-center">Pickup Location</th>
+                                                    <th class="text-center">Pickup Landmark</th>
+                                                    <th class="text-center">Drop Off Location</th>
+                                                    <th class="text-center">Drop Off Landmark</th>
+                                                    <th class="text-center">Requested On</th>
+                                                    <th class="text-center">Requested By</th>
+                                                </tfoot>
+                                                <tbody>
+                                                    @if (Model.UserRequests != null)
+                                                    {
+                                                        @foreach (var request in Model.UserRequests)
+                                                        {
+                                                            @if (request.IsApproved && !request.IsCompleted)
+                                                            {
+                                                                <tr>
+                                                                    <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@request.PickupPoint</td>
+                                                                    <td class="text-center">@request.PickupPointLandmark</td>
+                                                                    <td class="text-center">@request.DropPoint</td>
+                                                                    <td class="text-center">@request.DropPointLandmark</td>
+                                                                    <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@user.Name</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Requested For</th>
+                                                        <th class="text-center">Pickup Location</th>
+                                                        <th class="text-center">Pickup Landmark</th>
+                                                        <th class="text-center">Drop Off Location</th>
+                                                        <th class="text-center">Drop Off Landmark</th>
+                                                        <th class="text-center">Requested On</th>
+                                                        <th class="text-center">Requested By</th>
+                                                        <th class="text-center">Approved Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
                                                     <th class="text-center">Requested For</th>
                                                     <th class="text-center">Pickup Location</th>
                                                     <th class="text-center">Pickup Landmark</th>
@@ -221,47 +234,37 @@
                                                     <th class="text-center">Requested On</th>
                                                     <th class="text-center">Requested By</th>
                                                     <th class="text-center">Approved Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tfoot>
-                                                <th class="text-center">Requested For</th>
-                                                <th class="text-center">Pickup Location</th>
-                                                <th class="text-center">Pickup Landmark</th>
-                                                <th class="text-center">Drop Off Location</th>
-                                                <th class="text-center">Drop Off Landmark</th>
-                                                <th class="text-center">Requested On</th>
-                                                <th class="text-center">Requested By</th>
-                                                <th class="text-center">Approved Status</th>
-                                            </tfoot>
-                                            <tbody>
-                                                @if (Model.UserRequests != null)
-                                                {
-                                                    @foreach (var request in Model.UserRequests)
+                                                </tfoot>
+                                                <tbody>
+                                                    @if (Model.UserRequests != null)
                                                     {
-                                                        @if (request.IsCompleted)
+                                                        @foreach (var request in Model.UserRequests)
                                                         {
-                                                            <tr>
-                                                                <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@request.PickupPoint</td>
-                                                                <td class="text-center">@request.PickupPointLandmark</td>
-                                                                <td class="text-center">@request.DropPoint</td>
-                                                                <td class="text-center">@request.DropPointLandmark</td>
-                                                                <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                                <td class="text-center">@user.Name</td>
-                                                                @if (request.IsUnapproved)
-                                                                {
-                                                                    <td class="text-center">Unapproved</td>
-                                                                }
-                                                                @if (request.IsApproved)
-                                                                {
-                                                                    <td class="text-center">Approved</td>
-                                                                }
-                                                            </tr>
+                                                            @if (request.IsCompleted)
+                                                            {
+                                                                <tr>
+                                                                    <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@request.PickupPoint</td>
+                                                                    <td class="text-center">@request.PickupPointLandmark</td>
+                                                                    <td class="text-center">@request.DropPoint</td>
+                                                                    <td class="text-center">@request.DropPointLandmark</td>
+                                                                    <td class="text-center">@request.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="text-center">@user.Name</td>
+                                                                    @if (request.IsUnapproved)
+                                                                    {
+                                                                        <td class="text-center">Unapproved</td>
+                                                                    }
+                                                                    @if (request.IsApproved)
+                                                                    {
+                                                                        <td class="text-center">Approved</td>
+                                                                    }
+                                                                </tr>
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -270,9 +273,12 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
+}
+else
+{
+        <h1>Access Denied</h1>
+}
 <script>
     $(document).ready(function () {
         $('#dataTable1').dataTable({

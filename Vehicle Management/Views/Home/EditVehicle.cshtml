@@ -5,76 +5,83 @@
 
 @if (User.IsInRole("Admin"))
 {
-	<div class="container">
-		<div class="row">
-			<div class="col-md-5">
-				<h1>Update Vehicle Details</h1>
-				<form asp-controller="Home" asp-action="EditVehicle" method="post">
-					<input asp-for="Vehicle.Id" type="hidden" class="form-control" placeholder="@Model.Vehicle.Id">
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.RegistrationNumber">Registration Number</label>
-						<input asp-for="Vehicle.RegistrationNumber" type="text" class="form-control" placeholder=@Model.Vehicle.RegistrationNumber>
-						<span asp-validation-for="Vehicle.RegistrationNumber" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.ManufactureCompany">Manufacture Company</label>
-						<input asp-for="Vehicle.ManufactureCompany" type="text" class="form-control" id="manufacture-company" placeholder=@Model.Vehicle.ManufactureCompany>
-						<span asp-validation-for="Vehicle.ManufactureCompany" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.VehicleModel">Vehicle Model</label>
-						<input asp-for="Vehicle.VehicleModel" type="text" class="form-control" id="vehicle-model" placeholder=@Model.Vehicle.VehicleModel>
-						<span asp-validation-for="Vehicle.VehicleModel" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.EngineCapacity">Engine Capacity(cc)</label>
-						<input asp-for="Vehicle.EngineCapacity" type="number" class="form-control" id="engine-capacity" placeholder=@Model.Vehicle.EngineCapacity>
-						<span asp-validation-for="Vehicle.EngineCapacity" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.ManufacturedYear">Manufactured Year</label>
-						<input asp-for="Vehicle.ManufacturedYear" type="number" class="form-control" id="manufactured-year" placeholder=@Model.Vehicle.ManufacturedYear>
-						<span asp-validation-for="Vehicle.ManufacturedYear" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.PurchasedOn">Purchased On</label>
-						<input asp-for="Vehicle.PurchasedOn" type="date" class="form-control" id="purchased-on" placeholder=@Model.Vehicle.PurchasedOn.ToString("MM-dd-YYYY") value="2000-01-15">
-						<span asp-validation-for="Vehicle.PurchasedOn" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.Color">Color</label>
-						<input asp-for="Vehicle.Color" type="text" class="form-control" id="color" placeholder=@Model.Vehicle.Color>
-						<span asp-validation-for="Vehicle.Color" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.EngineNumber">Engine Number</label>
-						<input asp-for="Vehicle.EngineNumber" type="text" class="form-control" id="engine-number" placeholder=@Model.Vehicle.EngineNumber>
-						<span asp-validation-for="Vehicle.EngineNumber" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.ChasisNumber">Chasis Number</label>
-						<input asp-for="Vehicle.ChasisNumber" type="text" class="form-control" id="chasis-number" placeholder=@Model.Vehicle.ChasisNumber>
-						<span asp-validation-for="Vehicle.ChasisNumber" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="Vehicle.PassengerCapacity">Passenger Capacity</label>
-						<input asp-for="Vehicle.PassengerCapacity" type="number" class="form-control" id="passenger-capacity" placeholder=@Model.Vehicle.PassengerCapacity>
-						<span asp-validation-for="Vehicle.PassengerCapacity" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-4">
-						<label asp-for="Vehicle.Fuel">Fuel</label>
-						<select asp-for="Vehicle.Fuel" class="form-control" id="fuel" placeholder=@Model.Vehicle.Fuel>
-							<option value="Diesel">Diesel</option>
-							<option value="Petrol">Petrol</option>
-						</select>
-						<span asp-validation-for="Vehicle.Fuel" class="text-danger"></span>
-					</div>
-					<input asp-for="Vehicle.IsAvailable" type="hidden" class="form-control" id="passenger-capacity" placeholder=@Model.Vehicle.IsAvailable>
-					<button type="submit" class="btn btn-primary">Update</button>
-				</form>
+	@if (Model.Vehicle != null)
+	{
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5">
+					<h1>Update Vehicle Details</h1>
+					<form asp-controller="Home" asp-action="EditVehicle" method="post">
+						<input asp-for="Vehicle.Id" type="hidden" class="form-control" placeholder="@Model.Vehicle.Id">
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.RegistrationNumber">Registration Number</label>
+							<input asp-for="Vehicle.RegistrationNumber" type="text" class="form-control" placeholder=@Model.Vehicle.RegistrationNumber>
+							<span asp-validation-for="Vehicle.RegistrationNumber" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.ManufactureCompany">Manufacture Company</label>
+							<input asp-for="Vehicle.ManufactureCompany" type="text" class="form-control" id="manufacture-company" placeholder=@Model.Vehicle.ManufactureCompany>
+							<span asp-validation-for="Vehicle.ManufactureCompany" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.VehicleModel">Vehicle Model</label>
+							<input asp-for="Vehicle.VehicleModel" type="text" class="form-control" id="vehicle-model" placeholder=@Model.Vehicle.VehicleModel>
+							<span asp-validation-for="Vehicle.VehicleModel" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.EngineCapacity">Engine Capacity(cc)</label>
+							<input asp-for="Vehicle.EngineCapacity" type="number" class="form-control" id="engine-capacity" placeholder=@Model.Vehicle.EngineCapacity>
+							<span asp-validation-for="Vehicle.EngineCapacity" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.ManufacturedYear">Manufactured Year</label>
+							<input asp-for="Vehicle.ManufacturedYear" type="number" class="form-control" id="manufactured-year" placeholder=@Model.Vehicle.ManufacturedYear>
+							<span asp-validation-for="Vehicle.ManufacturedYear" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.PurchasedOn">Purchased On</label>
+							<input asp-for="Vehicle.PurchasedOn" type="date" class="form-control" id="purchased-on" placeholder=@Model.Vehicle.PurchasedOn.ToString("MM-dd-YYYY") value="2000-01-15">
+							<span asp-validation-for="Vehicle.PurchasedOn" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.Color">Color</label>
+							<input asp-for="Vehicle.Color" type="text" class="form-control" id="color" placeholder=@Model.Vehicle.Color>
+							<span asp-validation-for="Vehicle.Color" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.EngineNumber">Engine Number</label>
+							<input asp-for="Vehicle.EngineNumber" type="text" class="form-control" id="engine-number" placeholder=@Model.Vehicle.EngineNumber>
+							<span asp-validation-for="Vehicle.EngineNumber" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.ChasisNumber">Chasis Number</label>
+							<input asp-for="Vehicle.ChasisNumber" type="text" class="form-control" id="chasis-number" placeholder=@Model.Vehicle.ChasisNumber>
+							<span asp-validation-for="Vehicle.ChasisNumber" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-3">
+							<label asp-for="Vehicle.PassengerCapacity">Passenger Capacity</label>
+							<input asp-for="Vehicle.PassengerCapacity" type="number" class="form-control" id="passenger-capacity" placeholder=@Model.Vehicle.PassengerCapacity>
+							<span asp-validation-for="Vehicle.PassengerCapacity" class="text-danger"></span>
+						</div>
+						<div class="form-group pb-4">
+							<label asp-for="Vehicle.Fuel">Fuel</label>
+							<select asp-for="Vehicle.Fuel" class="form-control" id="fuel" placeholder=@Model.Vehicle.Fuel>
+								<option value="Diesel">Diesel</option>
+								<option value="Petrol">Petrol</option>
+							</select>
+							<span asp-validation-for="Vehicle.Fuel" class="text-danger"></span>
+						</div>
+						<input asp-for="Vehicle.IsAvailable" type="hidden" class="form-control" id="passenger-capacity" placeholder=@Model.Vehicle.IsAvailable>
+						<button type="submit" class="btn btn-primary">Update</button>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
+	}
+	else
+	{
+		<h1>Vehicle Not Found</h1>
+	}
 }
 else
 {

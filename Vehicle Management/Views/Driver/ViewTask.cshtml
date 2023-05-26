@@ -43,14 +43,14 @@
                                 </tr>
                             </thead>
                             <tfoot>
-                            <th></th>
-                            <th class="text-center">Requested For</th>
-                            <th class="text-center">Pickup Location</th>
-                            <th class="text-center">Pickup Landmark</th>
-                            <th class="text-center">Drop Off Location</th>
-                            <th class="text-center">Drop Off Landmark</th>
-                            <th class="text-center">Requested On</th>
-                            <th class="text-center">Requested By</th>
+                                <th></th>
+                                <th class="text-center">Requested For</th>
+                                <th class="text-center">Pickup Location</th>
+                                <th class="text-center">Pickup Landmark</th>
+                                <th class="text-center">Drop Off Location</th>
+                                <th class="text-center">Drop Off Landmark</th>
+                                <th class="text-center">Requested On</th>
+                                <th class="text-center">Requested By</th>
                             </tfoot>
                             <tbody>
                                 @foreach (var request in Model.UserRequests)
@@ -96,14 +96,14 @@
                                 </tr>
                             </thead>
                             <tfoot>
-                            <th class="text-center">Requested For</th>
-                            <th class="text-center">Pickup Location</th>
-                            <th class="text-center">Pickup Landmark</th>
-                            <th class="text-center">Drop Off Location</th>
-                            <th class="text-center">Drop Off Landmark</th>
-                            <th class="text-center">Requested On</th>
-                            <th class="text-center">Requested By</th>
-                            <th class="text-center">Approved Status</th>
+                                <th class="text-center">Requested For</th>
+                                <th class="text-center">Pickup Location</th>
+                                <th class="text-center">Pickup Landmark</th>
+                                <th class="text-center">Drop Off Location</th>
+                                <th class="text-center">Drop Off Landmark</th>
+                                <th class="text-center">Requested On</th>
+                                <th class="text-center">Requested By</th>
+                                <th class="text-center">Approved Status</th>
                             </tfoot>
                             <tbody>
                                 @foreach (var request in Model.UserRequests)
@@ -158,52 +158,55 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#dataTable1').dataTable({
-                "paging": true,
-                "searching": true
-            });
-            $('#dataTable2').dataTable({
-                "paging": true,
-                "searching": true
-            });
-            $('#dataTable3').dataTable({
-                "paging": true,
-                "searching": true
-            });
+}
+else
+{
+    <h1>Access Denied</h1>
+}
+<script>
+    $(document).ready(function () {
+        $('#dataTable1').dataTable({
+            "paging": true,
+            "searching": true
         });
-    </script>
+        $('#dataTable2').dataTable({
+            "paging": true,
+            "searching": true
+        });
+        $('#dataTable3').dataTable({
+            "paging": true,
+            "searching": true
+        });
+    });
+</script>
 
-    <script>
-        // Function to search table rows
-        function searchTable() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("myTable");
-            tr = table.getElementsByTagName("tr");
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
+<script>
+    // Function to search table rows
+    function searchTable() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
                 }
             }
         }
+    }
 
-        function completedConfirmation(event, id) {
-            event.preventDefault();
-            $('#completedConfirmationModal').modal('show');
-            $('#completedButton').val(id);
-            $('#completedButton').attr('href', '/Driver/CompletedTask/' + id);
-            return false;
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
-}
+    function completedConfirmation(event, id) {
+        event.preventDefault();
+        $('#completedConfirmationModal').modal('show');
+        $('#completedButton').val(id);
+        $('#completedButton').attr('href', '/Driver/CompletedTask/' + id);
+        return false;
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>

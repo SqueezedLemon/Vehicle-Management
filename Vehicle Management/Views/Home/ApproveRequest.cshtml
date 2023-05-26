@@ -6,77 +6,91 @@
 
 @if (User.IsInRole("Admin"))
 {
-	<div class="container">
-		<div class="row">
-			<div class="col-md-5">
-				<h1 class="pt-2">Request Details</h1>
-				<form asp-controller="Home" asp-action="ApproveRequest" method="post">
-					<input asp-for="UserRequest.Id" type="hidden" class="form-control" placeholder="@Model.UserRequest.Id" disabled>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.RequestedDate">Requested Date</label>
-						<input asp-for="UserRequest.RequestedDate" type="date" class="form-control" placeholder=@Model.UserRequest.RequestedDate.ToString("dd-MM-YYYY") disabled>
-						<span asp-validation-for="UserRequest.RequestedDate" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.PickupPoint">Pickup Location</label>
-						<input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder=@Model.UserRequest.PickupPoint disabled>
-						<span asp-validation-for="UserRequest.PickupPoint" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.PickupPointLandmark">Pickup Point</label>
-						<input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" placeholder=@Model.UserRequest.PickupPointLandmark disabled>
-						<span asp-validation-for="UserRequest.PickupPointLandmark" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.DropPoint">Drop Location</label>
-						<input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder=@Model.UserRequest.DropPoint disabled>
-						<span asp-validation-for="UserRequest.DropPoint" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.DropPointLandmark">Manufactured Year</label>
-						<input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" placeholder=@Model.UserRequest.DropPointLandmark disabled>
-						<span asp-validation-for="UserRequest.DropPointLandmark" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.CreatedDate">Requested On</label>
-						<input asp-for="UserRequest.CreatedDate" type="date" class="form-control" placeholder=@Model.UserRequest.CreatedDate.ToString("dd-MM-YYYY") disabled>
-						<span asp-validation-for="UserRequest.CreatedDate" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						@{
-							var user = await userManager.FindByIdAsync(Model.UserRequest.UserId);
-						}
-						<label>Requested By</label>
-						<input type="text" class="form-control" placeholder="@user.Name" disabled>
-						<span asp-validation-for="UserRequest.UserId" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.Message">Message</label>
-						<textarea asp-for="UserRequest.Message" class="form-control" name="message" rows="2" cols="30" placeholder="@Model.UserRequest.Message" disabled></textarea>
-						<span asp-validation-for="UserRequest.Message" class="text-danger"></span>
-					</div>
-					<div class="form-group pb-3">
-						<label asp-for="UserRequest.DriverUserId">Assign Driver</label>
-						<select asp-for="UserRequest.DriverUserId" class="form-control">
-							<option value="" disabled selected></option>
-							@{
-								var users = userManager.Users.ToList();
-							}
-							@foreach(var eachUser in users)
-							{
-								var userRole = await userManager.GetRolesAsync(eachUser);
-								@if (userRole.Contains("Driver"))
-								{
-									<option value="@eachUser.Id">@eachUser.Name</option>
+	@if (Model.UserRequest != null)
+	{
+		@if (Model.UserRequest.IsApproved != true)
+		{
+			<div class="container">
+				<div class="row">
+					<div class="col-md-5">
+						<h1 class="pt-2">Request Details</h1>
+						<form asp-controller="Home" asp-action="ApproveRequest" method="post">
+							<input asp-for="UserRequest.Id" type="hidden" class="form-control" placeholder="@Model.UserRequest.Id" disabled>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.RequestedDate">Requested Date</label>
+								<input asp-for="UserRequest.RequestedDate" type="date" class="form-control" placeholder=@Model.UserRequest.RequestedDate.ToString("dd-MM-YYYY") disabled>
+								<span asp-validation-for="UserRequest.RequestedDate" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.PickupPoint">Pickup Location</label>
+								<input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder=@Model.UserRequest.PickupPoint disabled>
+								<span asp-validation-for="UserRequest.PickupPoint" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.PickupPointLandmark">Pickup Point</label>
+								<input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" placeholder=@Model.UserRequest.PickupPointLandmark disabled>
+								<span asp-validation-for="UserRequest.PickupPointLandmark" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.DropPoint">Drop Location</label>
+								<input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder=@Model.UserRequest.DropPoint disabled>
+								<span asp-validation-for="UserRequest.DropPoint" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.DropPointLandmark">Manufactured Year</label>
+								<input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" placeholder=@Model.UserRequest.DropPointLandmark disabled>
+								<span asp-validation-for="UserRequest.DropPointLandmark" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.CreatedDate">Requested On</label>
+								<input asp-for="UserRequest.CreatedDate" type="date" class="form-control" placeholder=@Model.UserRequest.CreatedDate.ToString("dd-MM-YYYY") disabled>
+								<span asp-validation-for="UserRequest.CreatedDate" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								@{
+									var user = await userManager.FindByIdAsync(Model.UserRequest.UserId);
 								}
-							}
-						</select>
+								<label>Requested By</label>
+								<input type="text" class="form-control" placeholder="@user.Name" disabled>
+								<span asp-validation-for="UserRequest.UserId" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.Message">Message</label>
+								<textarea asp-for="UserRequest.Message" class="form-control" name="message" rows="2" cols="30" placeholder="@Model.UserRequest.Message" disabled></textarea>
+								<span asp-validation-for="UserRequest.Message" class="text-danger"></span>
+							</div>
+							<div class="form-group pb-3">
+								<label asp-for="UserRequest.DriverUserId">Assign Driver</label>
+								<select asp-for="UserRequest.DriverUserId" class="form-control">
+									<option value="" disabled selected></option>
+									@{
+										var users = userManager.Users.ToList();
+									}
+									@foreach (var eachUser in users)
+									{
+										var userRole = await userManager.GetRolesAsync(eachUser);
+										@if (userRole.Contains("Driver"))
+										{
+											<option value="@eachUser.Id">@eachUser.Name</option>
+										}
+									}
+								</select>
+							</div>
+							<button type="submit" class="btn btn-primary">Approve</button>
+						</form>
 					</div>
-					<button type="submit" class="btn btn-primary">Approve</button>
-				</form>
+				</div>
 			</div>
-		</div>
-	</div>
+		}
+		else
+		{
+			<h1>Request Already Approved.</h1>
+		}
+	}
+	else
+	{
+		<h1>Request Not Found</h1>
+	}
 }
 else
 {

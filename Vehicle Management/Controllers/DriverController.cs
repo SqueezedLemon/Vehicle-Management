@@ -29,22 +29,28 @@ namespace Vehicle_Management.Controllers
 		public async Task<ActionResult> ViewTask(BaseViewModel model)
 		{
 			var currentUser = await _userManager.GetUserAsync(User);
-			var request = _dbContext.Requests.ToList();
-			model.UserRequests = request.Where(r => r.DriverUserId == currentUser.Id).Select(r => new UserRequest
+			if (currentUser != null)
 			{
-				Id = r.Id,
-				RequestedDate = r.RequestedDate,
-				PickupPoint = r.PickupPoint,
-				PickupPointLandmark = r.PickupPointLandmark,
-				DropPoint = r.DropPoint,
-				DropPointLandmark = r.DropPointLandmark,
-				CreatedDate = r.CreatedDate,
-				IsApproved = r.IsApproved,
-				IsUnapproved = r.IsUnapproved,
-				IsCompleted = r.IsCompleted,
-				UserId = r.UserId,
-			}).ToList();
-            model.Notifications = _notificationService.getDriverNotification(currentUser.Id);
+				var request = _dbContext.Requests.ToList();
+				if (request != null)
+				{
+					model.UserRequests = request.Where(r => r.DriverUserId == currentUser.Id).Select(r => new UserRequest
+					{
+						Id = r.Id,
+						RequestedDate = r.RequestedDate,
+						PickupPoint = r.PickupPoint,
+						PickupPointLandmark = r.PickupPointLandmark,
+						DropPoint = r.DropPoint,
+						DropPointLandmark = r.DropPointLandmark,
+						CreatedDate = r.CreatedDate,
+						IsApproved = r.IsApproved,
+						IsUnapproved = r.IsUnapproved,
+						IsCompleted = r.IsCompleted,
+						UserId = r.UserId,
+					}).ToList();
+				}
+				model.Notifications = _notificationService.getDriverNotification(currentUser.Id);
+			}
             return View(model);
 		}
 
