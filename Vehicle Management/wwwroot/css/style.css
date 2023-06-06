@@ -63,16 +63,16 @@
         content: '';
         position: absolute;
         left: 0;
-        bottom: -50px;
+        bottom: -10%;
         overflow: visible;
         width: 100%;
-        height: 120px;
+        height: 17%;
         z-index: 0;
         -webkit-transform: skewY(-4deg);
         -moz-transform: skewY(-4deg);
         -ms-transform: skewY(-4deg);
         -o-transform: skewY(-4deg);
-        transform: skewY(-4deg);
+        transform: skewY(-2deg);
         background-color: #f8f9fa;
     }
 

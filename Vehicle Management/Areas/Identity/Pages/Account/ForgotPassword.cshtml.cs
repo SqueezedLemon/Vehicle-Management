@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Vehicle_Management.Data;
+using Vehicle_Management.Services;
 
 namespace Vehicle_Management.Areas.Identity.Pages.Account
 {
@@ -21,11 +22,13 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
     {
         private readonly UserManager<UserManager> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly EmailService _emailService;
 
-        public ForgotPasswordModel(UserManager<UserManager> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<UserManager> userManager, IEmailSender emailSender, EmailService emailService)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -71,10 +74,12 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                _emailService.SendEmail(Input.Email, "Reset Password", $"Please reset your password by clicking here: {HtmlEncoder.Default.Encode(callbackUrl)}");
+                //await _emailSender.SendEmailAsync(
+                //    Input.Email,
+                //    "Reset Password",
+                //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

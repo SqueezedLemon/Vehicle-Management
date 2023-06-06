@@ -79,7 +79,7 @@ connection.on("ReceiveNotification", (senderName, requestId, notificationType,) 
     dateElement.classList.add("small", "text-gray-500");
     dateElement.appendChild(dateText);
     var senderNameText = document.createTextNode(senderName + " has approved your request");
-    if (notificationType == "Is Pending") {
+    if (notificationType == "IsPending") {
         senderNameText = document.createTextNode("A new request is pending");
     }
     var senderNameElement = document.createElement("span");
