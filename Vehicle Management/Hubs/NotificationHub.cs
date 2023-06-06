@@ -49,11 +49,25 @@ namespace Vehicle_Management.Hubs
             {
                 if (notificationType == "IsApproved")
                 {
-                    _emailService.SendEmail(receiverUser.Email, "Request Approved", "Your vehicle request has been approved.");
+                    try
+                    {
+                        _emailService.SendEmail(receiverUser.Email, "Request Approved", "Your vehicle request has been approved.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "An error occurred");
+                    }
                 }
                 if (notificationType == "IsPending")
                 {
-                    _emailService.SendEmail(receiverUser.Email, "Pending Request", "A new request is pending.");
+                    try
+                    {
+                        _emailService.SendEmail(receiverUser.Email, "Pending Request", "A new request is pending.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "An error occurred");
+                    }  
                 }
                 await _dbContext.SaveChangesAsync();
             }
@@ -84,12 +98,26 @@ namespace Vehicle_Management.Hubs
             if (notificationType == "NeedsApproval")
             {
                 var emailBody = "A new request by " + senderUser.Name + " needs approval.";
-                await _emailService.SendEmailToAdmins("Request Completed", emailBody);
+                try
+                {
+                    await _emailService.SendEmailToAdmins("Needs Approval", emailBody);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred");
+                }    
             }
             if (notificationType == "RequestCompleted")
             {
                 var emailBody = senderUser.Name + " has completed a request.";
-                await _emailService.SendEmailToAdmins("Request Completed", emailBody);
+                try
+                {
+                    await _emailService.SendEmailToAdmins("Request Completed", emailBody);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred");
+                }  
             }
             notification.EmailSent = true;
 			_dbContext.Notifications.Add(notification);

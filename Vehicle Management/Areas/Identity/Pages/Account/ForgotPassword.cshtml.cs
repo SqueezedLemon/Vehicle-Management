@@ -23,12 +23,14 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
         private readonly UserManager<UserManager> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly EmailService _emailService;
+        private readonly ILogger<ForgotPasswordModel> _logger;
 
-        public ForgotPasswordModel(UserManager<UserManager> userManager, IEmailSender emailSender, EmailService emailService)
+        public ForgotPasswordModel(UserManager<UserManager> userManager, IEmailSender emailSender, EmailService emailService, ILogger<ForgotPasswordModel> logger)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _emailService = emailService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -74,8 +76,15 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-
-                _emailService.SendEmail(Input.Email, "Reset Password", $"Please reset your password by clicking here: {HtmlEncoder.Default.Encode(callbackUrl)}");
+                try
+                {
+                    _emailService.SendEmail(Input.Email, "Reset Password", $"Please reset your password by clicking here: {HtmlEncoder.Default.Encode(callbackUrl)}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred");
+                }
+                
                 //await _emailSender.SendEmailAsync(
                 //    Input.Email,
                 //    "Reset Password",
