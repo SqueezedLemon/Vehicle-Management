@@ -12,7 +12,8 @@
         Requested,
         Unapproved,
         Approved,
-        Completed
+        Completed,
+        Cancelled
     }
 
     public enum Notifications

@@ -49,6 +49,15 @@ namespace Vehicle_Management.Controllers
                         UserId = r.UserId,
                     }).ToList();
                     model.Notifications = _notificationService.getUserNotification(currentUser.Id);
+                    model.UserRequest = new UserRequest
+                    {
+                        PickupPoint = TempData["PickupPoint"]?.ToString() ?? "",
+                        DropPoint = TempData["DropPoint"]?.ToString() ?? "",
+                        PickupPointLandmark = TempData["PickupPointLandmark"]?.ToString() ?? "",
+                        DropPointLandmark = TempData["DropPointLandmark"]?.ToString() ?? "",
+                        RequestedDate = TempData["RequestedDate"] as DateTime? ?? DateTime.MinValue,
+                        Message = TempData["RequestMessage"]?.ToString() ?? ""
+                    };
                 }
             }
             return View(model);
@@ -84,6 +93,7 @@ namespace Vehicle_Management.Controllers
 			_dbContext.Add(newRequestHistory);
 			_dbContext.SaveChanges();
 
+            TempData["message"] = "New Vehicle Request Created";
 			if (currentUser != null)
             {
                await _notification.SendNotificationToAdmins(currentUser.Id, newRequestId, "NeedsApproval");
@@ -91,6 +101,41 @@ namespace Vehicle_Management.Controllers
 
             return RedirectToAction("Home");
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CancelRequest(int id, RequestHistory newRequestHistory)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null) 
+            {
+                var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).AsEnumerable().FirstOrDefault(r => r.Id == id && r.CreatedbyId == currentUser.Id);
+                if (getRequest is null)
+                {
+                    return NotFound();
+                }
+                getRequest.IsCancelled = true;
+                getRequest.IsCompleted = true;
+                getRequest.SetRequestStatus(_dbContext, "Cancelled");
+
+                var notification = _dbContext.Notifications.Include(n => n.NotificationType).AsEnumerable().FirstOrDefault(n => n.RequestId == getRequest.Id && n.IsOfType("NeedsApproval"));
+                if (notification != null)
+                {
+                    _dbContext.Remove(notification);
+                    _dbContext.SaveChanges();
+                }
+
+                newRequestHistory = new RequestHistory();
+                newRequestHistory.CreatedDate = DateTime.Now;
+                newRequestHistory.RequestId = getRequest.Id;
+                newRequestHistory.RequestStatusId = getRequest.RequestStatus.Id;
+                newRequestHistory.CreatedById = currentUser.Id;
+                _dbContext.Add(newRequestHistory);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("Home");
+            }
+            return NotFound();
         }
     }
 }

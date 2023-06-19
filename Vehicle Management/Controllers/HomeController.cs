@@ -25,6 +25,7 @@ namespace Vehicle_Management.Controllers
 			_notificationService = notificationService;
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> Index(BaseViewModel model, TotalData totalData)
 		{
 
@@ -43,7 +44,23 @@ namespace Vehicle_Management.Controllers
             return View(model);
         }
 
-		public IActionResult Privacy()
+		[HttpPost]
+        public IActionResult Index(BaseViewModel model)
+		{
+			if (model.UserRequest != null)
+			{
+				TempData["PickupPoint"] = model.UserRequest.PickupPoint;
+                TempData["DropPoint"] = model.UserRequest.DropPoint;
+                TempData["PickupPointLandmark"] = model.UserRequest.PickupPointLandmark;
+                TempData["DropPointLandmark"] = model.UserRequest.DropPointLandmark;
+                TempData["RequestedDate"] = model.UserRequest.RequestedDate;
+                TempData["RequestMessage"] = model.UserRequest.Message;
+            }
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
+        }
+
+
+        public IActionResult Privacy()
 		{
 			return View();
 		}

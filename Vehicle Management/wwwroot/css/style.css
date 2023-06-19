@@ -277,7 +277,7 @@
 .request-form .form-control {
     border: transparent !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    height: 40px !important;
+    /*height: 40px !important;*/
     background: transparent !important;
     color: rgba(255, 255, 255, 0.7) !important;
     font-size: 12px;
@@ -311,7 +311,9 @@
 }
 
 .request-form textarea.form-control {
-    height: inherit !important;
+    resize: vertical;
+    overflow: auto;
+    /*height: auto !important;*/
 }
 
 .services-wrap {
@@ -356,4 +358,19 @@
     -webkit-box-pack: center !important;
     -ms-flex-pack: center !important;
     justify-content: center !important;
+}
+
+.password-input-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.darker-icon {
+    color: #333333;
 }

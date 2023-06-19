@@ -130,6 +130,7 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    TempData["message"] = "Invalid Credentials";
                     return Page();
                 }
             }

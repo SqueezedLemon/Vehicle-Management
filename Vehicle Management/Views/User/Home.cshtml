@@ -30,29 +30,72 @@
                                 <h2>Make your trip</h2>
                                 <div class="form-group">
                                     <label asp-for="UserRequest.PickupPoint" class="label">Pick-up location</label>
-                                    <input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
+                                    @if(Model.UserRequest.PickupPoint == "")
+                                    {
+                                        <input asp-for="UserRequest.PickupPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="UserRequest.PickupPoint" type="text" class="form-control" value="@Model.UserRequest.PickupPoint" required>
+                                    }
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="UserRequest.DropPoint" class="label">Drop-off location</label>
-                                    <input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
+                                    @if(Model.UserRequest.DropPoint == "")
+                                    {
+                                        <input asp-for="UserRequest.DropPoint" type="text" class="form-control" placeholder="City, Airport, Station, etc" required>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="UserRequest.DropPoint" type="text" class="form-control" value="@Model.UserRequest.DropPoint" required>
+                                    }
                                 </div>
                                 <div class="d-flex">
                                     <div class="form-group mr-2">
                                         <label asp-for="UserRequest.PickupPointLandmark" class="label">Pick-up Landmark</label>
-                                        <input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc" required>
+                                        @if(Model.UserRequest.PickupPointLandmark == "")
+                                        {
+                                            <input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" id="book_pick_date" placeholder="Tower, Mall, etc" required>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="UserRequest.PickupPointLandmark" type="text" class="form-control" value="@Model.UserRequest.PickupPointLandmark" required>
+                                        }
                                     </div>
                                     <div class="form-group ml-2">
                                         <label asp-for="UserRequest.DropPointLandmark" class="label">Drop-off Landmark</label>
-                                        <input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc" required>
+                                        @if(Model.UserRequest.DropPointLandmark == "")
+                                        {
+                                            <input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" id="book_off_date" placeholder="Tower, Mall, etc" required>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="UserRequest.DropPointLandmark" type="text" class="form-control" value="@Model.UserRequest.DropPointLandmark" required>
+                                        }
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="UserRequest.RequestedDate" class="label">Pick-up Date</label>
-                                    <input asp-for="UserRequest.RequestedDate" type="date" class="form-control" id="time_pick" placeholder="Date" required>
+                                    @if (Model.UserRequest.RequestedDate.ToString("yyyy-MM-dd") != "0001-01-01")
+                                    {
+                                        <input asp-for="UserRequest.RequestedDate" type="date" class="form-control" value="@Model.UserRequest.RequestedDate.ToString("yyyy-MM-dd")" required>
+                                    }
+                                    else
+                                    {
+                                        Model.UserRequest.RequestedDate = DateTime.Now;
+                                        <input asp-for="UserRequest.RequestedDate" type="date" class="form-control" id="time_pick" placeholder="Date" required>
+                                    }
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="UserRequest.Message" class="label">Message</label>
-                                    <textarea asp-for="UserRequest.Message" class="form-control" id="message" rows="2" cols="30" placeholder="Your Message"></textarea>
+                                    @if(Model.UserRequest.Message == "")
+                                    {
+                                        <textarea asp-for="UserRequest.Message" class="form-control" id="message" rows="2" cols="30" placeholder="Your Message" required></textarea>
+                                    }
+                                    else
+                                    {
+                                        <textarea asp-for="UserRequest.Message" class="form-control" id="message" rows="2" cols="30" placeholder="Your Message" required>@Model.UserRequest.Message</textarea>
+                                    }
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-secondary py-3 px-4">Request A Vehicle Now</button>
@@ -119,6 +162,7 @@
                                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                                 <thead>
                                                     <tr>
+                                                        <th class="text-center">Actions</th>
                                                         <th class="text-center">Requested For</th>
                                                         <th class="text-center">Pickup Location</th>
                                                         <th class="text-center">Pickup Landmark</th>
@@ -136,6 +180,11 @@
                                                             @if (!request.IsApproved && !request.IsCompleted)
                                                             {
                                                                 <tr>
+                                                                    <td class="text-center">
+                                                                        <a asp-controller="User" asp-action="EditVehicle" asp-route-id="@request.Id"><i class="bi bi-pencil-square" title="Edit Request" style="font-size: 20px; color: black;"></i></a>
+                                                                        <br>
+                                                                        <a href="" onclick="cancelConfirmation(event,@request.Id);"><i class="bi bi-trash3-fill" title="Cancel Request" style="font-size: 20px; color: red;"></i></a>
+                                                                    </td>
                                                                     <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
                                                                     <td class="text-center">@request.PickupPoint</td>
                                                                     <td class="text-center">@request.PickupPointLandmark</td>
@@ -245,6 +294,43 @@
                 </div>
             </div>
         </div>
+
+        <!-- Cancel Popup Modal -->
+        <div class="modal fade" id="cancelConfirmationModal" tabindex="-1" aria-labelledby="CancelConfirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelConfirmationModalLabel">Confirm Cancellation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to cancel this request? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <a asp-controller="User" asp-action="CancelRequest" id="cancelButton" class="btn btn-danger">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (TempData["message"] != null)
+        {
+            @if (TempData["message"].ToString() == "New Vehicle Request Created")
+            {
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto text-danger">@TempData["message"]</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body text-black">
+                            Wait for an admin to approve your request.
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </section>
 }
 else
@@ -287,6 +373,18 @@ else
                 }
             }
         }
+    }
+
+    var toastElement = document.getElementById('liveToast');
+    var toast = new bootstrap.Toast(toastElement, { autohide: false });
+    toast.show();
+
+    function cancelConfirmation(event, id) {
+        event.preventDefault();
+        $('#cancelConfirmationModal').modal('show');
+        $('#cancelButton').val(id);
+        $('#cancelButton').attr('href', '/User/CancelRequest/' + id);
+        return false;
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
