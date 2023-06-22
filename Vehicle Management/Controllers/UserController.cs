@@ -137,5 +137,57 @@ namespace Vehicle_Management.Controllers
             }
             return NotFound();
         }
-    }
+
+        [HttpGet]
+        public async Task<IActionResult> EditRequest(int id, BaseViewModel model) 
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null)
+            {
+                var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).AsEnumerable().FirstOrDefault(r => r.Id == id && r.CreatedbyId == currentUser.Id && r.HasStatus("Requested"));
+                if (getRequest is null)
+                {
+                    return NotFound();
+                }
+                var message = _dbContext.RequestMessages.FirstOrDefault(rm => rm.RequestId == getRequest.Id);
+                model.UserRequest = new UserRequest
+                {
+                    PickupPoint = getRequest.PickupPoint,
+                    DropPoint = getRequest.DropPoint,
+                    PickupPointLandmark = getRequest.PickupPointLandmark,
+                    DropPointLandmark = getRequest.DropPointLandmark,
+                    RequestedDate = getRequest.RequestedDate,
+                    Message = message.Message
+                };
+                return View(model);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRequest(BaseViewModel model, int id)
+        {
+			var currentUser = await _userManager.GetUserAsync(User);
+			if (currentUser != null)
+			{
+				var getRequest = _dbContext.Requests.Include(r => r.RequestStatus).AsEnumerable().FirstOrDefault(r => r.Id == id && r.CreatedbyId == currentUser.Id && r.HasStatus("Requested"));
+				if (getRequest is null)
+				{
+					return NotFound();
+				}
+				var message = _dbContext.RequestMessages.FirstOrDefault(rm => rm.RequestId == getRequest.Id);
+				getRequest.PickupPoint = model.UserRequest.PickupPoint;
+                getRequest.DropPoint = model.UserRequest.DropPoint;
+                getRequest.PickupPointLandmark = model.UserRequest.PickupPointLandmark;
+                getRequest.DropPointLandmark = model.UserRequest.DropPointLandmark;
+                getRequest.RequestedDate = model.UserRequest.RequestedDate;
+                message.Message = model.UserRequest.Message;
+                _dbContext.SaveChanges();
+				return RedirectToAction("Home");
+			}
+			return NotFound();
+			
+        }
+
+	}
 }
