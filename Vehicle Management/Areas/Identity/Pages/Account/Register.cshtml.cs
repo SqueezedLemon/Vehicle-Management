@@ -130,6 +130,7 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
                 
                 if (result.Succeeded)
                 {
+                    TempData["message"] = "New User Created!";
                     var userId = await _userManager.GetUserIdAsync(user);
                     if (Input.Role == "User")
                     {

@@ -54,10 +54,10 @@ connection.on("ReceiveNotification", (senderName, requestId, notificationType,) 
     var newNotification = document.createElement("a");
     newNotification.classList.add("dropdown-item", "d-flex", "align-items-center");
     if (notificationType == "IsApproved") {
-        newNotification.href = ``;
+        newNotification.href = `/User/Home`;
     }
     if (notificationType == "IsPending") {
-        newNotification.href = ``;
+        newNotification.href = `/Driver/ViewTask`;
     }
 
     // Add notification icon*@

@@ -88,6 +88,7 @@ namespace Vehicle_Management.Controllers
 				IsApproved = r.IsApproved,
 				IsUnapproved = r.IsUnapproved,
 				IsCompleted = r.IsCompleted,
+				IsCancelled = r.IsCancelled,
 				UserId = r.UserId,
 			}).ToList();
             model.Notifications = _notificationService.getAdminNotification();

@@ -32,10 +32,10 @@
             <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>Actions</th>
                                     <th class="text-center">Requested For</th>
                                     <th class="text-center">Pickup Location</th>
                                     <th class="text-center">Pickup Landmark</th>
@@ -52,8 +52,9 @@
                                     {
                                         <tr>
                                             <td class="text-center">
-                                                <a asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@request.Id"><i class="bi bi-check-lg" style="font-size: 25px; color: green;"></i></a>
-                                                <a href="" onclick="unapproveConfirmation(event,@request.Id);"><i class="bi bi-x" style="font-size: 30px; color: red;"></i></a>
+                                                <a asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@request.Id"><i class="bi bi-check-lg" title="Approve Request" style="font-size: 25px; color: green;"></i></a>
+                                                <br>
+                                                <a href="" onclick="unapproveConfirmation(event,@request.Id);"><i class="bi bi-x" title="Unapprove Request" style="font-size: 30px; color: red;"></i></a>
                                             </td>
                                             <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
                                             <td class="text-center">@request.PickupPoint</td>
@@ -151,6 +152,10 @@
                                             @if (request.IsApproved)
                                             {
                                                 <td class="text-center">Approved</td>
+                                            }
+                                            @if (request.IsCancelled)
+                                            {
+                                                <td class="text-center">Cancelled</td>
                                             }
                                         </tr>
                                     }
