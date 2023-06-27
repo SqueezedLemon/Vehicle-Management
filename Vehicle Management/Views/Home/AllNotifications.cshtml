@@ -1,0 +1,81 @@
+﻿@model Vehicle_Management.Models.BaseViewModel
+@inject UserManager<UserManager> UserManager
+@{
+    ViewData["Title"] = "All Notifications";
+}
+
+@if (Model != null && Model.AllNotifications != null)
+{
+    <h1 class="pt-2 ml-4">Notifications</h1>
+    @foreach (var notification in Model.AllNotifications)
+    {
+        @if (notification.NotificationType == "NeedsApproval")
+        {
+            <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@notification.RequestId">
+                <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="small text-gray-500">@notification.Date</div>
+                    @{
+                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                    }
+                    <span class="font-weight-bold">Request by @notificationSender.Name needs approval</span>
+                </div>
+            </a>
+        }
+
+        @if (notification.NotificationType == "RequestCompleted")
+        {
+            <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="ViewRequests">
+                <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="small text-gray-500">@notification.Date</div>
+                    @{
+                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                    }
+                    <span class="font-weight-bold">@notificationSender.Name has completed a request.</span>
+                </div>
+            </a>
+        }
+
+        @if (notification.NotificationType == "IsApproved")
+        {
+            <a class="dropdown-item d-flex align-items-center" asp-controller="User" asp-action="Home">
+                <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="small text-gray-500">@notification.Date</div>
+                    @{
+                        var notificationSender = await UserManager.FindByIdAsync(notification.CreatedById);
+                    }
+                    <span class="font-weight-bold">@notificationSender.Name has approved your request.</span>
+                </div>
+            </a>
+        }
+
+        @if (notification.NotificationType == "IsPending")
+        {
+            <a class="dropdown-item d-flex align-items-center" asp-controller="Driver" asp-action="ViewTask">
+                <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="small text-gray-500">@notification.Date</div>
+                    <span class="font-weight-bold">A new request is pending.</span>
+                </div>
+            </a>
+        }
+    }
+}

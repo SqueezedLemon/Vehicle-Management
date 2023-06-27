@@ -149,6 +149,7 @@ namespace Vehicle_Management.Controllers
                 model.UserRequest.CreatedDate = getRequest.CreatedDate;
                 model.UserRequest.UserId = getRequest.UserId;
                 model.UserRequest.Message = getRequestMessage.Message;
+				model.UserRequest.IsApproved = getRequest.IsApproved;
             }
             model.Notifications = _notificationService.getAdminNotification();
             return View(model);
@@ -290,18 +291,79 @@ namespace Vehicle_Management.Controllers
             return View(model);
 		}
 
-		//Delete Existing Vehicle
+		//Disable Vehicle
 		[HttpGet]
-		public IActionResult DeleteVehicle(int id)
+		public IActionResult DisableVehicle(int id)
 		{
+			if (User.IsInRole("Admin"))
+			{ 
 			var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
 			if (getVehicle is null)
 			{
 				return NotFound();
 			}
-			_dbContext.Remove(getVehicle);
+			getVehicle.IsAvailable = false;
 			_dbContext.SaveChanges();
 			return RedirectToAction("ViewVehicles");
-		}
+			}
+            return NotFound();
+        }
+
+        //Enable Vehicle
+        [HttpGet]
+        public IActionResult EnableVehicle(int id)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
+                if (getVehicle is null)
+                {
+                    return NotFound();
+                }
+                getVehicle.IsAvailable = true;
+                _dbContext.SaveChanges();
+                return RedirectToAction("ViewVehicles");
+            }
+            return NotFound();
+        }
+
+        //Delete Existing Vehicle
+        [HttpGet]
+		public IActionResult DeleteVehicle(int id)
+		{
+			if (User.IsInRole("Admin"))
+			{
+				var getVehicle = _dbContext.Vehicles.FirstOrDefault(v => v.Id == id);
+				if (getVehicle is null)
+				{
+					return NotFound();
+				}
+				_dbContext.Remove(getVehicle);
+				_dbContext.SaveChanges();
+				return RedirectToAction("ViewVehicles");
+			}
+            return NotFound();
+        }
+
+		//View All Notifiactions
+		[HttpGet]
+		public async  Task<IActionResult> AllNotifications(BaseViewModel model)
+		{
+			if (User == null)
+			{
+				return NotFound();
+			}
+			if (User.IsInRole("Admin"))
+			{
+				model.AllNotifications = _notificationService.getAllAdminNotifications();
+				return View(model);
+			}
+			else
+			{
+				var currrentUser = await _userManager.GetUserAsync(User);
+                model.AllNotifications = _notificationService.getAllUserNotifications(currrentUser.Id);
+				return View(model);
+			}
+        }
 	}
 }
