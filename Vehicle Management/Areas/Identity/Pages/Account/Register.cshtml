@@ -71,8 +71,11 @@
                                                     <i class="bi bi-eye" title="Show/Hide Password"></i>
                                                 </button>
                                             </div>
-                                            <div class="form-group">
-                                                <input type="password" asp-for="Input.ConfirmPassword" class="form-control form-control-user" placeholder="Repeat Password" required>
+                                            <div class="form-group password-input-group">
+                                                <input type="password" asp-for="Input.ConfirmPassword" class="form-control form-control-user" id="repeat-password" placeholder="Repeat Password" required>
+                                                <button class="btn toggle-password" type="button" id="toggleRepeatPassword">
+                                                    <i class="bi bi-eye" title="Show/Hide Password"></i>
+                                                </button>
                                             </div>
                                             <button id="registerSubmit" type="submit" class="btn btn-primary btn-user btn-block">Register</button>
                                             <hr>
@@ -98,6 +101,8 @@
 
 <script>
     // Function to toggle password visibility
+
+    //For Password
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
 
@@ -107,6 +112,18 @@
 
         togglePassword.querySelector('i').classList.toggle('bi-eye');
         togglePassword.querySelector('i').classList.toggle('bi-eye-slash');
+    });
+
+    //For Repeat Password
+    const toggleRepeatPassword = document.getElementById('toggleRepeatPassword');
+    const repeatPasswordInput = document.getElementById('repeat-password');
+
+    toggleRepeatPassword.addEventListener('click', function () {
+        const type = repeatPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        repeatPasswordInput.setAttribute('type', type);
+
+        toggleRepeatPassword.querySelector('i').classList.toggle('bi-eye');
+        toggleRepeatPassword.querySelector('i').classList.toggle('bi-eye-slash');
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

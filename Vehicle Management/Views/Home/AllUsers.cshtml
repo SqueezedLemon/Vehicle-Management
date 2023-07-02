@@ -1,0 +1,188 @@
+﻿@model Vehicle_Management.Models.BaseViewModel
+@{
+    ViewData["Title"] = "All Users";
+}
+<!-- Page Heading -->
+@if (User.IsInRole("Admin"))
+{
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="row">
+                <div class="col">
+                    <h4 class="m-0 font-weight-bold text-primary">Users</h4>
+                </div>
+                <ul class="nav nav-tabs nav-sm-justified" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab" aria-controls="active" aria-selected="true"><h6 class="m-0 font-weight-bold text-primary">Active Users</h6></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled" type="button" role="tab" aria-controls="disabled" aria-selected="false"><h6 class="m-0 font-weight-bold text-primary">Disabled Users</h6></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Total Requests</th>
+                                    <th>Disable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.UserDetails != null)
+                                {
+                                    @foreach (var userDetail in Model.UserDetails)
+                                    {
+                                        @if (!userDetail.IsDisabled)
+                                        {
+                                            <tr>
+                                                <td class="text-center">@userDetail.Name</td>
+                                                <td class="text-center">@userDetail.Email</td>
+                                                <td class="text-center">@userDetail.Role</td>
+                                                <td class="text-center">@userDetail.TotalRequests</td>
+                                                <td class="text-center">
+                                                    <a href="" onclick="disableConfirmation(event, '@userDetail.Id');" data-bs-toggle="modal" data-bs-target="#disableConfirmationModal"><i class="bi bi-shield-slash-fill" title="Disable User" style="font-size: 22px; color: red;"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="disabled" role="tabpanel" aria-labelledby="disabled-tab">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Total Requests</th>
+                                    <th>Enable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.UserDetails != null)
+                                {
+                                    @foreach (var userDetail in Model.UserDetails)
+                                    {
+                                        @if (userDetail.IsDisabled)
+                                        {
+                                            <tr>
+                                                <td class="text-center">@userDetail.Name</td>
+                                                <td class="text-center">@userDetail.Email</td>
+                                                <td class="text-center">@userDetail.Role</td>
+                                                <td class="text-center">@userDetail.TotalRequests</td>
+                                                <td class="text-center">
+                                                    <a href="" onclick="enableConfirmation(event, '@userDetail.Id');" data-bs-toggle="modal" data-bs-target="#enableConfirmationModal"><i class="bi bi-shield-fill-check" title="Enable User" style="font-size: 22px; color: black;"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disable Popup Modal -->
+    <div class="modal fade" id="disableConfirmationModal" tabindex="-1" aria-labelledby="disableConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disableConfirmationModalLabel">Disable User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to disable this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a asp-controller="Home" asp-action="DisableUser" id="disableButton" class="btn btn-danger">Disable</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enable Popup Modal -->
+    <div class="modal fade" id="enableConfirmationModal" tabindex="-1" aria-labelledby="enableConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="enableConfirmationModalLabel">Enable User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to enable this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <a asp-controller="Home" asp-action="EnableUser" id="enableButton" class="btn btn-secondary">Enable</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#dataTable1').dataTable({
+                "paging": true,
+                "searching": true
+            });
+            $('#dataTable2').dataTable({
+                "paging": true,
+                "searching": true
+            });
+        });
+    </script>
+
+    <script>
+        // Function to search table rows
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function disableConfirmation(event, id) {
+            event.preventDefault();
+            $('#disableButton').attr('href', '/Home/DisableUser/' + id);
+        }
+
+        function enableConfirmation(event, id) {
+            event.preventDefault();
+            $('#enableButton').attr('href', '/Home/EnableUser/' + id);
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+}
+
+

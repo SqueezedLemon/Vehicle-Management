@@ -20,11 +20,13 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
+        private readonly UserManager<UserManager> _userManager;
         private readonly SignInManager<UserManager> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<UserManager> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(UserManager<UserManager> userManager,SignInManager<UserManager> signInManager, ILogger<LoginModel> logger)
         {
+            _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -110,6 +112,16 @@ namespace Vehicle_Management.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                //If User is disabled
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user != null && user.IsDisabled)
+                {
+                    // Account is disabled, deny login access
+                    ModelState.AddModelError(string.Empty, "Your account has been disabled. Please contact support for assistance.");
+                    TempData["message"] = "User Disabled";
+                    return Page();
+                }
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);

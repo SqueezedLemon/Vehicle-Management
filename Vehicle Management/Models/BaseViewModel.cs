@@ -9,5 +9,6 @@
         public List<NotificationView>? Notifications { get; set; }
         public List<AllNotificationView>? AllNotifications { get; set; }
         public TotalData? TotalData { get; set; }
+        public List<UserDetail>? UserDetails { get; set; }
     }
 }

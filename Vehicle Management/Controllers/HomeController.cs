@@ -365,5 +365,74 @@ namespace Vehicle_Management.Controllers
 				return View(model);
 			}
         }
-	}
+
+        //View All Users
+        [HttpGet]
+        public async Task<IActionResult> AllUsers(BaseViewModel model)
+        {
+            var users = await _dbContext.Users.ToListAsync();
+            var userDetails = new List<UserDetail>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var roleName = roles.FirstOrDefault();
+
+                var totalRequests = _dbContext.Requests.Count(r => r.CreatedbyId == user.Id);
+
+                var userDetail = new UserDetail
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = roleName,
+                    TotalRequests = totalRequests,
+                    IsDisabled = user.IsDisabled
+                };
+
+                userDetails.Add(userDetail);
+            }
+
+            model.UserDetails = userDetails;
+
+            return View(model);
+        }
+
+        //Enable User
+        [HttpGet]
+        public IActionResult EnableUser(String id)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                var getUser = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+                if (getUser is null)
+                {
+                    return NotFound();
+                }
+                getUser.IsDisabled = false;
+                _dbContext.SaveChanges();
+                return RedirectToAction("AllUsers");
+            }
+            return NotFound();
+        }
+
+        //Disable User
+        [HttpGet]
+        public IActionResult DisableUser(String id)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                var getUser = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+                if (getUser is null)
+                {
+                    return NotFound();
+                }
+                getUser.IsDisabled = true;
+                _dbContext.SaveChanges();
+                return RedirectToAction("AllUsers");
+            }
+            return NotFound();
+        }
+
+    }
 }
