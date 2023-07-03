@@ -35,7 +35,6 @@
                         <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Actions</th>
                                     <th class="text-center">Requested For</th>
                                     <th class="text-center">Pickup Location</th>
                                     <th class="text-center">Pickup Landmark</th>
@@ -43,6 +42,8 @@
                                     <th class="text-center">Drop Off Landmark</th>
                                     <th class="text-center">Requested On</th>
                                     <th class="text-center">Requested By</th>
+                                    <th class="text-center">Approve</th>
+                                    <th class="text-center">Unapprove</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,11 +52,6 @@
                                     @if (!request.IsApproved && !request.IsCompleted)
                                     {
                                         <tr>
-                                            <td class="text-center">
-                                                <a asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@request.Id"><i class="bi bi-check-lg" title="Approve Request" style="font-size: 25px; color: green;"></i></a>
-                                                <br>
-                                                <a href="" onclick="unapproveConfirmation(event,@request.Id);"><i class="bi bi-x" title="Unapprove Request" style="font-size: 30px; color: red;"></i></a>
-                                            </td>
                                             <td class="text-center">@request.RequestedDate.ToString("yyyy-MM-dd")</td>
                                             <td class="text-center">@request.PickupPoint</td>
                                             <td class="text-center">@request.PickupPointLandmark</td>
@@ -66,6 +62,12 @@
                                                 var user = await userManager.FindByIdAsync(request.UserId);
                                             }
                                             <td class="text-center">@user.Name</td>
+                                            <td class="text-center">
+                                                <a asp-controller="Home" asp-action="ApproveRequest" asp-route-id="@request.Id"><i class="bi bi-check-lg" title="Approve Request" style="font-size: 25px; color: green;"></i></a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="" onclick="unapproveConfirmation(event,@request.Id);"><i class="bi bi-x" title="Unapprove Request" style="font-size: 30px; color: red;"></i></a>
+                                            </td>
                                         </tr>
                                     }
                                 }
