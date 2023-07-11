@@ -1,4 +1,6 @@
-﻿namespace Vehicle_Management.Models
+﻿using Vehicle_Management.Areas.Identity.Pages.Account;
+
+namespace Vehicle_Management.Models
 {
     public class BaseViewModel
     {
@@ -10,5 +12,6 @@
         public List<AllNotificationView>? AllNotifications { get; set; }
         public TotalData? TotalData { get; set; }
         public List<UserDetail>? UserDetails { get; set; }
+        public RegisterUser? RegisterUser { get; set; }
     }
 }

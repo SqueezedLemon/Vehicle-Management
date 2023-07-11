@@ -1,22 +1,27 @@
 ﻿ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Vehicle_Management.Constants;
 using Vehicle_Management.Data;
 using Vehicle_Management.Hubs;
 using Vehicle_Management.Models;
 using Vehicle_Management.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Vehicle_Management.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly UserManager<UserManager> _userManager;
+		private readonly UserManager<UserManager> _userManager;	
         private readonly ILogger<HomeController> _logger;
 		private readonly ApplicationDbContext _dbContext;
 		private readonly NotificationHub _notification;
 		private readonly NotificationService _notificationService;
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<UserManager> userManager, NotificationService notificationService, NotificationHub notification)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<UserManager> userManager, NotificationService notificationService, NotificationHub notification)
 		{
 			_userManager = userManager;
 			_logger = logger;
@@ -71,8 +76,66 @@ namespace Vehicle_Management.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 
-		//View All requests
+		//Register New User
 		[HttpGet]
+        public IActionResult RegisterUser()
+		{
+			return View();
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterUser(BaseViewModel model, Driver newDriver)
+        {
+            if (model.RegisterUser != null)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(model.RegisterUser.Email);
+                if (existingUser == null)
+				{
+                    var user = new UserManager
+                    {
+                        UserName = model.RegisterUser.Email,
+                        Email = model.RegisterUser.Email,
+                        Name = model.RegisterUser.Name,
+                        IsDisabled = false
+                    };
+
+                    var result = await _userManager.CreateAsync(user, model.RegisterUser.Password);
+                    if (result.Succeeded)
+                    {
+                        TempData["message"] = "New User Created!";
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        if (model.RegisterUser.Role == "User")
+                        {
+                            await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                            _logger.LogInformation("User created a new account with password.");
+                        }
+                        if (model.RegisterUser.Role == "Admin")
+                        {
+                            await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+                            _logger.LogInformation("User created a new account with password with admin permissions.");
+                        }
+                        if (model.RegisterUser.Role == "Driver")
+                        {
+                            await _userManager.AddToRoleAsync(user, Roles.Driver.ToString());
+                            _logger.LogInformation("User created a new account with password with driver permissions.");
+                            newDriver.CreatedDate = DateTime.Now;
+                            newDriver.UserID = userId;
+                            var currentUser = await _userManager.GetUserAsync(User);
+                            newDriver.CreatedById = currentUser.Id;
+                            _dbContext.Add(newDriver);
+                            _dbContext.SaveChanges();
+                        }
+                        return RedirectToAction("Index");
+                    }
+                    TempData["message"] = "Failed To Create User";
+                }
+                TempData["message"] = "User with Email Exists";
+            }
+            return View();
+        }
+
+        //View All requests
+        [HttpGet]
 		public IActionResult ViewRequests(BaseViewModel model)
 		{
 			var request = _dbContext.Requests.ToList();
@@ -433,6 +496,5 @@ namespace Vehicle_Management.Controllers
             }
             return NotFound();
         }
-
     }
 }

@@ -25,12 +25,15 @@ builder.Services.AddIdentity<UserManager,IdentityRole>()
     .AddUserManager<UserManager<UserManager>>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
+builder.Services.AddScoped<UserManager<UserManager>>();
+builder.Services.AddScoped<SignInManager<UserManager>>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<NotificationHub>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<EmailService>();
+
 
 var app = builder.Build();
 
@@ -58,6 +61,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
